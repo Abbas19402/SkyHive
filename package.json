@@ -9,6 +9,8 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@headlessui/react": "^1.7.13",
+    "@heroicons/react": "^2.0.17",
     "cors": "^2.8.5",
     "helmet": "^6.0.1",
     "mongoose": "^7.0.3",
