@@ -6,6 +6,7 @@
       "@/pageComponents/*": ["./pageComponents/*"],
       "@/public/*": ["./public/*"],
       "@/Constants/*": ["./Constants/*"],
+      "@/Redux/*": ["./Redux/*"],
     }
   }
 }

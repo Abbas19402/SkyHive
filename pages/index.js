@@ -1,11 +1,12 @@
 import Head from 'next/head'
 import { Inter } from 'next/font/google'
 import Landing from '../Landing'
+import { useEffect } from 'react'
 import RootLayout from '../Layouts/Root/RootLayout'
-import { Root } from 'postcss'
+import { useDispatch } from 'react-redux'
+import { deleteUser } from '@/Redux/Auth/AT'
 
 const inter = Inter({ subsets: ['latin'] })
-
 export default function Home() {
   return (
     <>

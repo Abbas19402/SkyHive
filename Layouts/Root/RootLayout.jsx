@@ -7,7 +7,7 @@ const RootLayout = ({ children }) => {
         <div className="sticky top-0 left-0 z-10">
             <Header/>
         </div>
-        <div className='w-full h-full mt-[12vh]'>
+        <div className='w-full h-full mt-[12vh] z-0'>
             {children}
         </div>
     </div>

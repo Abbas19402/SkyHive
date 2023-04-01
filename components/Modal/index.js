@@ -1,7 +1,7 @@
-import Signup from "./Auth/Signup";
+import Auth from "./Auth"
 
 const Modal = {
-    Signup
+    Auth
 }
 
 export default Modal
