@@ -20,7 +20,7 @@ const SignupForm = ({ loginStatus , setLoginStatus , setShowModal }) => {
                     password: values.password
                 })
                 console.log("SignUp successfull " + response);
-                setShowModal(false)
+                setLoginStatus(!loginStatus)
             } catch (error) {
                 console.log(error.message)
             }

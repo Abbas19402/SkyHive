@@ -1,9 +1,10 @@
-import React , { useState , useEffect } from 'react'
-import NavItems from '@/Constants/NavItems'
-import Modal from '../Modal';
+import React , { useEffect, useState } from 'react'
 import { useSelector , useDispatch } from 'react-redux';
-import Icon from '../Icons';
+
 import { deleteUser } from '@/Redux/Auth/AT';
+import Modal from '../Modal';
+import Icon from '../Icons';
+import NavItems from '@/Constants/NavItems'
 
 const Header = () => {
     const dispatch = useDispatch(deleteUser)
@@ -16,8 +17,8 @@ const Header = () => {
     return (
         <div className='w-full h-[12vh] bg-white fixed top-0 left-0 px-4'>
             <div className="flex justify-between items-center w-full h-full">
-                <div className='border-2 border-black w-36 h-16'>
-
+                <div className='w-36 h-16 flex justify-center items-center'>
+                    <span className="text-4xl tracking-wider">SkyHive</span>
                 </div>
                 <div className="flex flex-row justify-center items-center gap-6">
                     {NavItems.map((item , key) => (
@@ -27,12 +28,12 @@ const Header = () => {
                     ))}
                 </div>
                 <div className='relative flex flex-col justify-between items-center gap-x-5 p-3 group'>
-                    <div className={`w-fit px-5 h-10 flex justify-center items-center ${loginState ? 'bg-sky-700/20' : 'bg-amber-700/20'} transition-all duration-300 rounded-md group-hover:scale-110`}>
+                    <div className={`w-fit px-5 h-10 flex justify-center items-center ${loginState ? 'bg-neutral-800/90' : 'bg-amber-700/20'} transition-all duration-300 rounded-md group-hover:scale-110`}>
                         <div>
                             {loginState ?
                                 <button>
                                     {console.log("Login")}
-                                    <span className='text-md font-medium '>{user.username}</span>
+                                    <span className='text-md font-medium text-gray-300'>{user.username}</span>
                                 </button> : <button onClick={()=> {
                                     setShowModal(!showModal)
                                 }}>
@@ -44,7 +45,7 @@ const Header = () => {
                     <div className="absolute w-full rounded top-14 overflow-hidden bg-white p-2">
                         {loginState && <div className="w-full h-0 group-hover:h-10 bg-slate-50 rounded-md flex flex-row justify-around items-center overflow-hidden transition-all duration-300 hover:cursor-pointer" onClick={() => {dispatch(deleteUser())}}>
                             <div>
-                                <Icon.LogoutIcon className={`text-gray-600`} />
+                                <Icon.LogoutIcon className={`fill-gray-600`} />
                             </div>
                             <div>
                                 <span className='text-md font-medium text-gray-500 tracking-wide Capitalize'>Logout</span>

@@ -4,10 +4,15 @@ import Landing from '../Landing'
 import { useEffect } from 'react'
 import RootLayout from '../Layouts/Root/RootLayout'
 import { useDispatch } from 'react-redux'
-import { deleteUser } from '@/Redux/Auth/AT'
+import { getAirports } from '@/Redux/Airports'
+import axios from 'axios'
 
 const inter = Inter({ subsets: ['latin'] })
-export default function Home() {
+export default function Home(props) {
+  // const dispatch = useDispatch();
+  // useEffect(() => {
+  //   dispatch(getAirports(props.airports))
+  // })
   return (
     <>
       <Head>
@@ -22,3 +27,21 @@ export default function Home() {
       </>
   )
 }
+// export async function getServerSideProps(context) {
+//   const options = {
+//     method: 'GET',
+//     url: 'https://flight-radar1.p.rapidapi.com/airports/list',
+//     headers: {
+//       'X-RapidAPI-Key': 'f212ad29cemsh8c88899ec35c2f9p1b75d6jsnce6190dd4fa8',
+//       'X-RapidAPI-Host': 'flight-radar1.p.rapidapi.com'
+//     }
+//   };
+
+//   const { data:airports } = await axios.request(options)
+
+//   return {
+//     props: {
+//       airports
+//     }, // will be passed to the page component as props
+//   }
+// }
