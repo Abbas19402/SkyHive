@@ -48,7 +48,7 @@ const LoginForm = ({ loginStatus , setLoginStatus , setShowModal }) => {
                     </div>
                 </div>
 
-                <div className="flex items-center justify-between my-5">
+                <div className="flex flex-col md:flex-row items-center justify-between my-5">
                     <div className="flex items-center" onClick={()=> {
                         setLoginStatus(!loginStatus)
                     }}>
