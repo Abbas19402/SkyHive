@@ -5,9 +5,9 @@ const nextConfig = {
     remotePatterns: [
       {
         protocol: 'https',
-        hostname: 'toppng.com',
+        hostname: 'i.ibb.co',
         port: '',
-        pathname: '/uploads/preview/etihad-airways-logo-vector-11573966813yk1uupovip.jpg',
+        pathname: '/gr5FKnd/vistara.png'
       },
     ],
   },

@@ -1,17 +1,18 @@
-import React from 'react'
+import React , { useState } from 'react'
 import { LockClosedIcon } from '@heroicons/react/24/outline'
 import axios from 'axios'
 
 const SignupForm = ({ loginStatus , setLoginStatus , setShowModal }) => {
+
+    const [ error, setError ] = useState('');
+
     const signup = async(e) => {
-        console.log(e);
         e.preventDefault();
         const form = new FormData(e.currentTarget);
         let values = {};
         for (var pair of form.entries()) {
             values[pair[0]] = pair[1];
         }
-        console.log(values);
         if(values.confirmPassword === values.password) {
             try {
                 const response = await axios.post('http://localhost:5000/api/auth/signup', {
@@ -19,10 +20,10 @@ const SignupForm = ({ loginStatus , setLoginStatus , setShowModal }) => {
                     email: values.email,
                     password: values.password
                 })
-                console.log("SignUp successfull " + response);
                 setLoginStatus(!loginStatus)
             } catch (error) {
                 console.log(error.message)
+                setError(error.response.data.message)
             }
         } else {
             alert('Password didnt matched');
@@ -71,6 +72,12 @@ const SignupForm = ({ loginStatus , setLoginStatus , setShowModal }) => {
                         Forgot your password?
                         </a>
                     </div>
+                </div>
+
+                <div className="w-full h-10 mb-2 text-center">
+                    {error !== '' ? <div>
+                        <span className="text-red-500 font-bold text-sm tracking-wide">{error}</span>
+                    </div> : <div></div>}
                 </div>
 
                 <button

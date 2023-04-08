@@ -1,18 +1,13 @@
 import Head from 'next/head'
 import { Inter } from 'next/font/google'
 import Landing from '../Landing'
+import { useSelector } from 'react-redux'
 import { useEffect } from 'react'
-import RootLayout from '../Layouts/Root/RootLayout'
-import { useDispatch } from 'react-redux'
-import { getAirports } from '@/Redux/Airports'
-import axios from 'axios'
 
 const inter = Inter({ subsets: ['latin'] })
 export default function Home(props) {
-  // const dispatch = useDispatch();
-  // useEffect(() => {
-  //   dispatch(getAirports(props.airports))
-  // })
+  const user = useSelector(state => state.userData.user);
+  
   return (
     <>
       <Head>
@@ -22,24 +17,6 @@ export default function Home(props) {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <Landing />
-      </>
+    </>
   )
 }
-// export async function getServerSideProps(context) {
-//   const options = {
-//     method: 'GET',
-//     url: 'https://flight-radar1.p.rapidapi.com/airports/list',
-//     headers: {
-//       'X-RapidAPI-Key': 'f212ad29cemsh8c88899ec35c2f9p1b75d6jsnce6190dd4fa8',
-//       'X-RapidAPI-Host': 'flight-radar1.p.rapidapi.com'
-//     }
-//   };
-
-//   const { data:airports } = await axios.request(options)
-
-//   return {
-//     props: {
-//       airports
-//     }, // will be passed to the page component as props
-//   }
-// }

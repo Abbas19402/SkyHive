@@ -5,6 +5,7 @@ import { persistReducer } from 'redux-persist'
 import { combineReducers } from '@reduxjs/toolkit'
 import GetAT from './Auth/AT';
 import GetAirportsDataAPI from './Airports'
+import FlightManager from './Flight';
 
 const persistConfig = {
   key: 'root',  
@@ -13,7 +14,8 @@ const persistConfig = {
 };
 const reducer = combineReducers({
   userData: GetAT,
-  airportData: GetAirportsDataAPI
+  airportData: GetAirportsDataAPI,
+  Flights: FlightManager
 })
 const persistedReducer = persistReducer(persistConfig , reducer)
 

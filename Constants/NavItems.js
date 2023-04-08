@@ -1,15 +1,19 @@
 const NavItems = [
     {
         name: 'Home',
-    },
-    {
-        name: 'Services',
+        href: '/'
     },
     {
         name: 'About Us',
+        href: '/about'
     },
     {
         name: 'Contact',
+        href: '/contact'
+    },
+    {
+        name: 'Panel',
+        href: '/admin/panel'
     },
 ]
 

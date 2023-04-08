@@ -4,6 +4,8 @@ import Store from '../Redux/Store'
 import { PersistGate } from 'redux-persist/integration/react'
 import { persistStore } from 'redux-persist'
 import RootLayout from '../Layouts/Root/RootLayout'
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 export default function App({ Component, pageProps }) {
   let persistor = persistStore(Store)
@@ -11,6 +13,7 @@ export default function App({ Component, pageProps }) {
      <Provider store={Store}>
         <PersistGate persistor={persistor}>
           <RootLayout>
+            
             <Component {...pageProps} />
           </RootLayout>
         </PersistGate>

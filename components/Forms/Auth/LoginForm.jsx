@@ -1,29 +1,38 @@
-import React from 'react'
+import React , { useState } from 'react'
 import { LockClosedIcon } from '@heroicons/react/24/outline'
 import axios from 'axios'
 import { useDispatch } from 'react-redux'
 import { getUser } from '@/Redux/Auth/AT'
+import { toast } from 'react-toastify'
 
 const LoginForm = ({ loginStatus , setLoginStatus , setShowModal }) => {
     const dispatch = useDispatch();
+
+    const [ error, setError ] = useState('');
     const login = async(e) => {
-        console.log(e);
         e.preventDefault();
         const form = new FormData(e.currentTarget);
         let values = {};
         for (var pair of form.entries()) {
             values[pair[0]] = pair[1];
         }
-
         try {
             const response = await axios.post('http://localhost:5000/api/auth/login', {
-                username: values.username,
+                email: values.email,
                 password: values.password
             })
             dispatch(getUser(response.data.data))
+            if(response.data.data.isAdmin) {
+                toast.dark(`Welcome back ${response.data.data.username}`, {
+                    icon: <span>&#128526;</span>
+                })
+            } else {
+                toast.success('Logged in successfully!!')
+            }
             setShowModal(false)
         } catch (error) {
-            console.log(error.message)
+            console.log(error)
+            setError(error.response.data.message)
         }
     }
 
@@ -39,8 +48,8 @@ const LoginForm = ({ loginStatus , setLoginStatus , setShowModal }) => {
             <div className="h-[70%] w-full p-8">
                 <div className="flex flex-col gap-y-4 w-full h-full">
                     <div className="flex flex-col justify-around items-start gap-y-2">
-                        <label htmlFor='username' className="text-md text-gray-800 font-medium tracking-wide">Username</label>
-                        <input type="text" name="username"  className="w-full border-2 p-1 rounded-md"/>
+                        <label htmlFor='email' className="text-md text-gray-800 font-medium tracking-wide">Email</label>
+                        <input type="text" name="email"  className="w-full border-2 p-1 rounded-md"/>
                     </div>
                     <div className="flex flex-col justify-around items-start gap-y-2">
                         <label htmlFor='password' className="text-md text-gray-800 font-medium tracking-wide">Password</label>
@@ -62,6 +71,12 @@ const LoginForm = ({ loginStatus , setLoginStatus , setShowModal }) => {
                         Forgot your password?
                         </a>
                     </div>
+                </div>
+
+                <div className="w-full h-10 mb-2 text-center">
+                    {error !== '' ? <div>
+                        <span className="text-red-500 font-bold text-sm tracking-wide">{error}</span>
+                    </div> : <div></div>}
                 </div>
 
                 <button

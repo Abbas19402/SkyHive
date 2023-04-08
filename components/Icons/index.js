@@ -1,4 +1,4 @@
-import { LogoutIcon , Calendar , ArrowDownwardFilled , Flight , MenuLeft , Close } from "./General";
+import { LogoutIcon , Calendar , ArrowDownwardFilled , Flight , MenuLeft , Close , User , Add , Loader } from "./General";
 
 const Icon = {
     LogoutIcon,
@@ -6,6 +6,9 @@ const Icon = {
     ArrowDownwardFilled,
     Flight,
     MenuLeft,
-    Close
+    Close,
+    User,
+    Add,
+    Loader
 }
 export default Icon

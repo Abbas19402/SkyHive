@@ -6,6 +6,7 @@ import Modal from '../Modal';
 import Icon from '../Icons';
 import NavItems from '@/Constants/NavItems'
 import Link from 'next/link';
+import { toast } from 'react-toastify'
 
 const Header = () => {
     const dispatch = useDispatch(deleteUser);
@@ -26,9 +27,12 @@ const Header = () => {
                 </Link>
                 <div className="hidden lg:flex flex-row justify-center items-center gap-6">
                     {NavItems.map((item , key) => (
-                        <div key={key} className='flex flex-col gap-y-1 p-1 hover:cursor-pointer hover:scale-110 transition-all duration-300 rounded'>
-                            <span className="text-xl text-black tracking-wide font-medium ">{item.name}</span>
-                        </div>
+                        !user.isAdmin && item.name == 'Panel' ? <Link href={`${item.href}`} key={key} className='flex flex-col gap-y-1 p-1 hover:cursor-pointer hover:scale-110 transition-all duration-300 rounded'>
+                            <span className="text-xl text-black tracking-wide font-medium "></span>
+                        </Link> :  <Link href={`${item.href}`} key={key} className='group flex flex-col gap-y-1 p-1 hover:cursor-pointer hover:scale-110 transition-all duration-300 rounded'>
+                            <span className="text-xl text-black transition-all duration-700 hover:text-sky-600 tracking-wide font-medium ">{item.name}</span>
+                            <div className="h-0.5 w-0 transition-all duration-300 group-hover:w-full group-hover:border-sky-600 border-[1px] border-transparent"></div>
+                        </Link>
                     ))}
                 </div>
                 <div className='relative flex flex-col justify-between items-center gap-x-5 p-3 group'>
@@ -44,20 +48,34 @@ const Header = () => {
                                 </button>}  
                             </div>
                         </div>
-                        <div className='flex justify-center items-center px-5 h-10 bg-neutral-800 rounded-md' onClick={()=>setShowSidebar(!showSidebar)}>
-                            {showSidebar ? <Icon.Close className="fill-gray-300" /> : <Icon.MenuLeft className="fill-gray-300" />}
-                        </div>
+                        
                     </div>
-                    <div className="hidden lg:block absolute w-full rounded top-14 overflow-hidden bg-white p-2">
-                        {loginState && <div className="w-full h-0 group-hover:h-10 bg-slate-50 rounded-md flex flex-row justify-around items-center overflow-hidden transition-all duration-300 hover:cursor-pointer" onClick={() => {dispatch(deleteUser())}}>
-                            <div>
-                                <Icon.LogoutIcon className={`fill-gray-600`} />
+                    <div className="hidden lg:flex flex-col justify-center items-start gap-y-2 absolute w-full rounded top-14 overflow-hidden bg-white p-2 transition-all duration-300 group-hover:h-fit h-0">
+                        {loginState && <>
+                            <Link href={`/user/profile`} className="w-full h-10 bg-slate-50 rounded-md flex flex-row justify-around items-center overflow-hidden transition-all duration-300 hover:cursor-pointer">
+                                <div>
+                                    <Icon.User className={`fill-gray-600`} />
+                                </div>
+                                <div>
+                                    <span className='text-md font-medium text-gray-500 tracking-wide Capitalize'>Profile</span>
+                                </div>
+                            </Link>
+                            <div className="w-full h-10 bg-slate-50 rounded-md flex flex-row justify-around items-center overflow-hidden transition-all duration-300 hover:cursor-pointer" onClick={() => {
+                                dispatch(deleteUser())
+                                toast.success('You are logged out!!')
+                            }}>
+                                <div>
+                                    <Icon.LogoutIcon className={`fill-gray-600`} />
+                                </div>
+                                <div>
+                                    <span className='text-md font-medium text-gray-500 tracking-wide Capitalize'>Logout</span>
+                                </div>
                             </div>
-                            <div>
-                                <span className='text-md font-medium text-gray-500 tracking-wide Capitalize'>Logout</span>
-                            </div>
-                        </div>}
+                        </>}
                     </div>
+                </div>
+                <div className='lg:hidden flex justify-center items-center px-5 h-10 bg-neutral-800 rounded-md' onClick={()=>setShowSidebar(!showSidebar)}>
+                    {showSidebar ? <Icon.Close className="fill-gray-300" /> : <Icon.MenuLeft className="fill-gray-300" />}
                 </div>
             </div>
             <Modal.Auth loginStatus={loginStatus} setLoginStatus={setLoginStatus} setShowModal={setShowModal} showModal={showModal} />

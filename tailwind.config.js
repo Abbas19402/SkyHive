@@ -6,11 +6,14 @@ module.exports = {
     "./components/**/*.{js,ts,jsx,tsx}",
     "./Landing/**/*.{js,ts,jsx,tsx}",
     "./Layouts/**/*.{js,ts,jsx,tsx}",
+    "./pageComponents/**/*.{js,ts,jsx,tsx}",
     // Or if using `src` directory:
     "./src/**/*.{js,ts,jsx,tsx}",
   ],
   theme: {
     extend: {},
   },
-  plugins: [],
+  plugins: [
+    require('@tailwindcss/forms'),
+  ],
 }

@@ -8,7 +8,6 @@ export const AirportData = createSlice({
   reducers: {
     getAirports: (state , action) => {
       state.airports = action.payload
-      console.log(state.airports);
     },
   }
 })
