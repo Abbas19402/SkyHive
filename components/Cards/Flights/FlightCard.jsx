@@ -10,7 +10,7 @@ const FlightCard = ({ flightData }) => {
     const dispatch = useDispatch();
     const router = useRouter();
     
-    const { flightId , airline , departureDate , arrivalDate , aircraft , class:airlineClass , from , to , pickupAirport ,  destinationAirport , departureTime , arrivalTime , DAN , PAN , airlineLogo } = flightData;
+    const { _id ,flightId , airline , departureDate , arrivalDate , aircraft , class:airlineClass , from , to , pickupAirport ,  destinationAirport , departureTime , arrivalTime , DAN , PAN , airlineLogo } = flightData;
 
     let options = [];
     const [ selectedClass , setSelectedClass ] = useState('Class');
@@ -180,7 +180,7 @@ const FlightCard = ({ flightData }) => {
                         <span className="text-lg font-medium tracking-wide capitalize">{to}</span>
                     </div>
                 </div>
-                <button onClick={()=> saveFlightData(flightId , flightData) } className="w-[90%] h-[20%] flex flex-col justify-center items-center bg-neutral-800 m-2 rounded">
+                <button onClick={()=> saveFlightData(_id , flightData) } className="w-[90%] h-[20%] flex flex-col justify-center items-center bg-neutral-800 m-2 rounded">
                     <span className="text-3xl text-white">Book</span>
                 </button>
             </div>
