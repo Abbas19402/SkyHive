@@ -14,6 +14,7 @@ const FlightCard = ({ flightData }) => {
 
     let options = [];
     const [ selectedClass , setSelectedClass ] = useState('Class');
+    const [ chosenClass , setChosenClass ] = useState({});
     const [ dates , setDates ] = useState({
         dd: '',
         ad: ''
@@ -27,13 +28,13 @@ const FlightCard = ({ flightData }) => {
           month: 'long',
         });
     }
-    const saveFlightData = (id , selectedFlightData) => {
+    const saveFlightData = (id , selectedFlightData , chosenClass) => {
         dispatch(saveFlight(selectedFlightData));
         router.push({
             pathname: `/flights/${id}`,
             query: {
                 data: JSON.stringify({ selectedFlightData }),
-                selectedClass: selectedClass
+                chosenClass: JSON.stringify({data:chosenClass})
             }
         }, `/flights/${id}`)
     }
@@ -149,6 +150,7 @@ const FlightCard = ({ flightData }) => {
                                             {airlineClass.map((item , index) => (
                                                 <div key={index} className="w-full min-h-8 h-fit text-center hover:cursor-pointer" onClick={() => {
                                                     setSelectedClass(item.airlineClassName)
+                                                    setChosenClass(item)
                                                 }}>
                                                     <span className="text-sm font-medium text-gray-600 whitespace-nowrap hover:text-sky-600">{item.airlineClassName}</span>
                                                 </div>
@@ -180,7 +182,7 @@ const FlightCard = ({ flightData }) => {
                         <span className="text-lg font-medium tracking-wide capitalize">{to}</span>
                     </div>
                 </div>
-                <button onClick={()=> saveFlightData(_id , flightData) } className="w-[90%] h-[20%] flex flex-col justify-center items-center bg-neutral-800 m-2 rounded">
+                <button onClick={()=> saveFlightData(_id , flightData , chosenClass) } className="w-[90%] h-[20%] flex flex-col justify-center items-center bg-neutral-800 m-2 rounded">
                     <span className="text-3xl text-white">Book</span>
                 </button>
             </div>

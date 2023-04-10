@@ -6,7 +6,6 @@ const FlightsPage = ({ flights }) => {
     searchedFlights: flights.searchedFlights,
     returningFlight: flights.returningFlight
   }
-  console.log(typeof flights.searchedFlights);
   return (
     <div className='w-full h-fit'>
         <div className="p-2 flex flex-col gap-y-5">
