@@ -16,7 +16,7 @@ const PassengerForm = ({ savePassenger }) => {
     }
   return (
     <form onSubmit={setPassenger}>
-        <div className="mt-10 flex flex-col justify-start items-center border-2 py-2 px-2 rounded-lg">
+        <div className="mt-6 flex flex-col justify-start items-center border-2 py-2 px-2 rounded-lg">
         <div className="flex flex-row flex-wrap justify-around gap-4 ">
             <div className="w-[20vw]">
                 <Dropdown.FormDD label={'Category'} dataItems={category} selectedItem={selectedItem} setSelectedItem={setSelectedItem} />

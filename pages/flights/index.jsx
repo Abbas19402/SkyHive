@@ -12,12 +12,15 @@ const Flights = () => {
   const loginStatus = useSelector(state => state.userData.loginStatus);
 
   const [ flights , setFlights ] = useState({});
+  const [ bookingType , setBookingType ] = useState('');
   
   useEffect(()=> {
     if(router.query.data == null || router.query.data == 'undefined' ) {
       setFlights(JSON.parse(localStorage.getItem('flights')));
+      setBookingType(localStorage.getItem('booking_type'));
     } else {
       setFlights(JSON.parse(router.query.data));
+      setBookingType(router.query.booking_type);
     }
     if(!loginStatus) {
       router.push('/');
@@ -27,7 +30,7 @@ const Flights = () => {
   return (
     flights !== 'undefined' &&
     <FlightsLayout>
-      <FlightsPage flights={flights !== {} ? flights : "null"}/>
+      <FlightsPage flights={flights !== {} ? flights : "null"} bookingType={bookingType}/>
     </FlightsLayout>
   )
 }

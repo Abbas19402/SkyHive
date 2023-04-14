@@ -90,11 +90,13 @@ const SearchFlights = () => {
                 pathname: "/flights",
                 query: {
                   data: JSON.stringify({ searchedFlights , returningFlight }),
+                  booking_type: 'return'
                 },
               },
               "/flights"
             );
             localStorage.setItem("flights", JSON.stringify({ searchedFlights , returningFlight }));
+            localStorage.setItem("booking_type", 'return');
           } else {
             const { searchedFlights } = response.data;
             router.push(
@@ -102,11 +104,13 @@ const SearchFlights = () => {
                 pathname: "/flights",
                 query: {
                   data: JSON.stringify({ searchedFlights }),
+                  booking_type: 'one-way'
                 },
               },
               "/flights"
             );
             localStorage.setItem("flights", JSON.stringify({ searchedFlights }));
+            localStorage.setItem("booking_type", 'one-way');
           }
         })
         .catch(function (error) {

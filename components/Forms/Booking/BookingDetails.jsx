@@ -1,18 +1,50 @@
-import React , { useState } from 'react'
+import React , { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux';
 import Icon from '@/components/Icons';
 import Forms from '..';
+import { toast } from 'react-toastify';
 
-const BookingDetails = ({ data , slug , chosenClass }) => {
+const BookingDetails = ({ data , slug , chosenClass , returnFlightData }) => {
   const user = useSelector(state => state.userData.user);
   const [ passengerCount , setpassengerCount ] = useState(1);
   const [ passengers , setPassengers ] = useState([]);
-  const [ confirmedFlightClass , setConfirmedFlightClass ] = useState('NYC');
+  const [ cost , setCost ] = useState({})
 
   const savePassenger = (passengerDetails) => {
     setPassengers((old) => {
       return [...old , passengerDetails]
     })
+  }
+  
+  useEffect(() => {
+    const Cost = () => {
+      let totalFare = parseInt(chosenClass.data.fare) * 1000 * passengerCount;
+      let taxImplied
+      if(chosenClass.data.airlineClassName.toLowerCase() == 'economy') {
+        taxImplied = 5
+      } else {
+        taxImplied = 12
+      }
+      let tax = totalFare * taxImplied / 100 * passengerCount;
+      let finalFare = totalFare + tax;
+      return { totalFare , tax , finalFare }
+    }
+    setCost(Cost)
+  }, [passengerCount])
+
+  const confirmBooking = () => {
+    const isAdultAvailable = passengers.some((item) => item.category.toLowerCase() == 'adult' );
+    if(!isAdultAvailable) {
+      toast.warn('Atleast one adult is needed for travel');
+    } else {
+      const booking = {
+        user: user,
+        passenger: passengers,
+        flightDetails: data,
+        class: chosenClass,
+        totalCost: cost.finalFare
+      }
+    }
   }
   return (
     <div className='w-full'>
@@ -65,8 +97,11 @@ const BookingDetails = ({ data , slug , chosenClass }) => {
                 </div>
               </div>
             </div>
-
-            <div className="w-[30%] mb-4">
+          </div>
+          <div className="flex flex-col justify-start items-start border-b border-gray-900/10 my-10 pb-5">
+            <h2 className="text-base font-semibold leading-7 text-gray-900">Passenger Information</h2>
+            <p className="mt-1 text-sm leading-6 text-gray-600">Use a permanent address where you can receive mail.</p>
+            <div className="w-[30%] mt-4">
               <label htmlFor="passengerCount" className="block text-sm font-medium leading-6 text-gray-900">
                 No. of Passengers
               </label>
@@ -98,11 +133,6 @@ const BookingDetails = ({ data , slug , chosenClass }) => {
                 <span className="text-[12px] font-medium text-red-600">Can't add more than 5 passengers at a time.</span>
               </div>}
             </div>
-          </div>
-          <div className="flex flex-col justify-start items-start border-b border-gray-900/10 my-10 pb-5">
-            <h2 className="text-base font-semibold leading-7 text-gray-900">Passenger Information</h2>
-            <p className="mt-1 text-sm leading-6 text-gray-600">Use a permanent address where you can receive mail.</p>
-            
             {[...Array(passengerCount)].map( (item , index) => (
               <div key={index}>
                 <Forms.booking.passenger savePassenger={savePassenger}/>
@@ -112,17 +142,38 @@ const BookingDetails = ({ data , slug , chosenClass }) => {
 
           <div className="flex flex-col justify-start items-start border-b border-gray-900/10 my-10 pb-5 w-full">
             <h2 className="text-base font-semibold leading-7 text-gray-900">Flight Information</h2>
-            <p className="mt-1 text-sm leading-6 text-gray-600">Confirm your class. Can't change after that!!.</p>
+            <p className="mt-1 text-sm leading-6 text-gray-600">Confirm your flight details!!.</p>
             
-            <Forms.booking.flight flightData={data} chosenClass={chosenClass.data} setConfirmedFlightClass={setConfirmedFlightClass}/>
+            <Forms.booking.flight flightData={data}/>
+            {returnFlightData !== null && <div className='mt-14'>
+              <h2 className="text-base font-semibold leading-7 text-gray-600">Return Flight Information</h2>
+              <Forms.booking.flight flightData={returnFlightData} />
+            </div>}
           </div>
 
-          <div className="flex flex-row justify-end items-center border-b border-gray-900/10 my-10 pb-5 w-full">
-            <button
-              className="rounded-md bg-neutral-800 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-neutral-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 border-2 "
-            >
-              Confirm Booking
-            </button>
+          <div className="flex flex-col justify-start items-center border-b border-gray-900/10 my-10 pb-5 w-full">
+            <div className='flex flex-col justify-start items-center w-full'>
+              <div className="flex flex-row justify-between w-full">
+                <span className="text-gray-600 font-medium text-base">Fare</span>
+                <span className="text-gray-600 font-medium text-sm">{cost.totalFare}</span>
+              </div>
+              <div className="flex flex-row justify-between w-full">
+                <span className="text-gray-600 font-medium text-base">Tax</span>
+                <span className="text-gray-600 font-medium text-sm">{cost.tax}</span>
+              </div>
+              <div className="flex flex-row justify-between w-full">
+                <span className="text-gray-600 font-medium text-base">Total Fare</span>
+                <span className="text-gray-600 font-medium text-sm">{cost.finalFare}</span>
+              </div>
+            </div>
+            <div className='flex flex-row justify-end items-center w-full'>
+              <button
+                className="rounded-md bg-neutral-800 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-neutral-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 border-2 "
+                onClick={()=> confirmBooking()}
+              >
+                Confirm Booking
+              </button>
+            </div>
           </div>
         </div>
     </div>
