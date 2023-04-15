@@ -1,9 +1,11 @@
 import React , { useState } from "react";
 import Dropdown from "@/components/Dropdown";
+import Icon from "@/components/Icons";
 
 const PassengerForm = ({ savePassenger }) => {
     let category = [ "Infant" , "Child" , "Adult" ]
     const [ selectedItem , setSelectedItem ] = useState('')
+    const [ addStatus , setAddStatus ]= useState(false)
     const setPassenger = (e) => {
         e.preventDefault();
         const form = new FormData(e.currentTarget);
@@ -13,6 +15,7 @@ const PassengerForm = ({ savePassenger }) => {
             values[pair[0]] = pair[1];
         }
         savePassenger(values);
+        setAddStatus(true)
     }
   return (
     <form onSubmit={setPassenger}>
@@ -149,9 +152,16 @@ const PassengerForm = ({ savePassenger }) => {
         <div className="flex justify-end items-center w-full mt-3 px-1">
             <button
             type="submit"
-            className="rounded-md bg-neutral-800 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-neutral-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 border-2"
+            className="rounded-md bg-neutral-800 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-neutral-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 border-2 "
             >
-            Add
+                {addStatus ? <div className="flex flex-row justify-between items-center gap-x-1.5">
+                        <Icon.Check className="fill-white h-5 w-5"/> 
+                        <div className="h-5">Added</div>
+                    </div> : <div className="flex flex-row justify-between items-center gap-x-1.5">
+                        <Icon.AddUser className="fill-white h-5 w-5"/> 
+                        <div className="h-5">Add</div>
+                    </div>
+                }
             </button>
         </div>
         </div>

@@ -37,7 +37,7 @@ const FlightCard = ({ flightData , bookingType , returnFlight }) => {
         });
     }
     const book = (id , selectedFlightData , chosenClass) => {
-        if(selectedClass !== 'Class' ) {
+        if(selectedClass == 'Class' ) {
             toast.warning('Please choose your class!!')
         } else {
             dispatch(saveFlight(selectedFlightData));
@@ -45,10 +45,10 @@ const FlightCard = ({ flightData , bookingType , returnFlight }) => {
                 pathname: `/flights/${id}`,
                 query: {
                     chosenClass: JSON.stringify({data:chosenClass}),
-                    chosenReturnClass: null,
-                    return: `null`
-                },
-            }, `/flights/${id}return=null`)
+                    chosenReturnClass: 'null',
+                    return: 'null'
+                }
+        }, `/flights/${id}`)
         }
     }
     const bookReturn = (id , selectedFlightData , returnFlightData , chosenClass , chosenReturnClass) => {

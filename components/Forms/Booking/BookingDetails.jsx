@@ -4,33 +4,52 @@ import Icon from '@/components/Icons';
 import Forms from '..';
 import { toast } from 'react-toastify';
 
-const BookingDetails = ({ data , slug , chosenClass , returnFlightData }) => {
+const BookingDetails = ({ data , chosenClass , returnFlightData , chosenReturnClass }) => {
   const user = useSelector(state => state.userData.user);
   const [ passengerCount , setpassengerCount ] = useState(1);
   const [ passengers , setPassengers ] = useState([]);
-  const [ cost , setCost ] = useState({})
 
   const savePassenger = (passengerDetails) => {
     setPassengers((old) => {
       return [...old , passengerDetails]
     })
   }
-  
-  useEffect(() => {
-    const Cost = () => {
-      let totalFare = parseInt(chosenClass.data.fare) * 1000 * passengerCount;
-      let taxImplied
-      if(chosenClass.data.airlineClassName.toLowerCase() == 'economy') {
-        taxImplied = 5
-      } else {
-        taxImplied = 12
-      }
-      let tax = totalFare * taxImplied / 100 * passengerCount;
-      let finalFare = totalFare + tax;
-      return { totalFare , tax , finalFare }
+
+  const TaxImplied = (cost, airlineClass , NOP) => {
+    if(airlineClass.data.airlineClassName.toLowerCase() == 'economy') {
+      let taxCost = cost * 5 / 100 * passengerCount
+      return taxCost
+    } else {
+      let taxCost = cost * 12 / 100 * passengerCount
+      return taxCost
     }
-    setCost(Cost)
-  }, [passengerCount])
+  }
+  
+  const Cost = () => {
+    let totalFareInReturn = 0
+    if(returnFlightData !== null) totalFareInReturn = parseInt(chosenReturnClass.data.fare) * 1000 * passengerCount;
+
+    let totalFare = parseInt(chosenClass.data.fare) * 1000 * passengerCount;
+    let finalFare = 0 , tax = {
+      outgoing: 0,
+      returning: 0
+    };
+    if(returnFlightData !== null) {
+      tax.outgoing = TaxImplied(totalFare , chosenClass);
+      tax.returning = TaxImplied(totalFareInReturn , chosenClass)
+      finalFare = totalFare + totalFareInReturn + tax.outgoing + tax.returning
+    } else {
+      tax.outgoing = TaxImplied(totalFare , chosenClass)
+      finalFare = totalFare + tax.outgoing;
+    }
+    return { 
+      outgoingFare: parseInt(chosenClass.data.fare) * 1000 * passengerCount,
+      totalFare: totalFare + totalFareInReturn , 
+      returnFare: totalFareInReturn ,
+      tax: tax , 
+      finalFare: finalFare
+    }
+  }
 
   const confirmBooking = () => {
     const isAdultAvailable = passengers.some((item) => item.category.toLowerCase() == 'adult' );
@@ -42,7 +61,7 @@ const BookingDetails = ({ data , slug , chosenClass , returnFlightData }) => {
         passenger: passengers,
         flightDetails: data,
         class: chosenClass,
-        totalCost: cost.finalFare
+        totalCost: Cost().finalFare
       }
     }
   }
@@ -153,17 +172,50 @@ const BookingDetails = ({ data , slug , chosenClass , returnFlightData }) => {
 
           <div className="flex flex-col justify-start items-center border-b border-gray-900/10 my-10 pb-5 w-full">
             <div className='flex flex-col justify-start items-center w-full'>
-              <div className="flex flex-row justify-between w-full">
-                <span className="text-gray-600 font-medium text-base">Fare</span>
-                <span className="text-gray-600 font-medium text-sm">{cost.totalFare}</span>
+              <div className="flex flex-col w-full mb-2">
+                <span className="text-black font-medium text-base">Fare</span>
+                <div className="w-full pl-10 flex flex-col justify-start items-start">
+                  <div className="flex flex-row w-full justify-between items-center">
+                    <span className="text-gray-600 font-medium text-base">Outgoing</span>
+                    <span className="text-gray-600 font-medium text-sm">{Cost().outgoingFare}</span>
+                  </div>
+                  <div className="flex flex-row w-full justify-between items-center">
+                    <span className="text-gray-600 font-medium text-base">Returning</span>
+                    <span className="text-gray-600 font-medium text-sm">{Cost().returnFare}</span>
+                  </div>
+                </div>
+                <div className="w-full h-fit">
+                  <div className="h-1 w-full bg-black"></div>
+                </div>
+                <div className="w-full flex flex-row justify-between items-center">
+                  <span className="text-black font-bold text-base">Total</span>
+                    <span className="text-black font-bold text-sm">{Cost().totalFare}</span>
+                </div>
+              </div>
+
+              <div className="flex flex-col w-full mb-2">
+                <span className="text-black font-medium text-base">Tax</span>
+                <div className="w-full pl-10 flex flex-col justify-start items-start">
+                  <div className="flex flex-row w-full justify-between items-center">
+                    <span className="text-gray-600 font-medium text-base">Outgoing</span>
+                    <span className="text-gray-600 font-medium text-sm">{Cost().tax.outgoing}</span>
+                  </div>
+                  <div className="flex flex-row w-full justify-between items-center">
+                    <span className="text-gray-600 font-medium text-base">Returning</span>
+                    <span className="text-gray-600 font-medium text-sm">{Cost().tax.returning}</span>
+                  </div>
+                </div>
+                <div className="w-full h-fit">
+                  <div className="h-1 w-full bg-black"></div>
+                </div>
+                <div className="w-full flex flex-row justify-between items-center">
+                  <span className="text-black font-bold text-base">Total</span>
+                    <span className="text-black font-bold text-sm">{Cost().tax.outgoing + Cost().tax.returning}</span>
+                </div>
               </div>
               <div className="flex flex-row justify-between w-full">
-                <span className="text-gray-600 font-medium text-base">Tax</span>
-                <span className="text-gray-600 font-medium text-sm">{cost.tax}</span>
-              </div>
-              <div className="flex flex-row justify-between w-full">
-                <span className="text-gray-600 font-medium text-base">Total Fare</span>
-                <span className="text-gray-600 font-medium text-sm">{cost.finalFare}</span>
+                <span className="text-black font-bold text-base">Total Fare</span>
+                <span className="text-black font-bold text-base tracking-wider">{Cost().finalFare}</span>
               </div>
             </div>
             <div className='flex flex-row justify-end items-center w-full'>
