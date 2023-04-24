@@ -3,6 +3,7 @@ import { useSelector } from 'react-redux';
 import Icon from '@/components/Icons';
 import Forms from '..';
 import { toast } from 'react-toastify';
+import axios from 'axios';
 
 const BookingDetails = ({ data , chosenClass , returnFlightData , chosenReturnClass }) => {
   const user = useSelector(state => state.userData.user);
@@ -51,7 +52,7 @@ const BookingDetails = ({ data , chosenClass , returnFlightData , chosenReturnCl
     }
   }
 
-  const confirmBooking = () => {
+  const confirmBooking = async() => {
     const isAdultAvailable = passengers.some((item) => item.category.toLowerCase() == 'adult' );
     if(!isAdultAvailable) {
       toast.warn('Atleast one adult is needed for travel');
@@ -59,11 +60,26 @@ const BookingDetails = ({ data , chosenClass , returnFlightData , chosenReturnCl
       const booking = {
         user: user,
         passenger: passengers,
-        flightDetails: data,
+        flightId: data.flightId,
         class: chosenClass,
         totalCost: Cost().finalFare
       }
-    }
+      console.log(booking);
+      const res = await axios.request({
+        method: 'POST',
+        url: 'http://localhost:5000/api/bookings/book_flight',
+        headers: {
+            "Authorization" : `Bearer ${JSON.parse(user.access_token)}`
+        },
+        data: {
+          flightId: booking.flightId,
+          user: user.email,
+          passengers: passengers,
+          selectedClass: chosenClass
+        }
+      })
+        console.log("Booking -> ",res);
+      }
   }
   return (
     <div className='w-full'>
