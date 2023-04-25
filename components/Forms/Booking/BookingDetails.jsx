@@ -64,7 +64,6 @@ const BookingDetails = ({ data , chosenClass , returnFlightData , chosenReturnCl
         class: chosenClass,
         totalCost: Cost().finalFare
       }
-      console.log(booking);
       const res = await axios.request({
         method: 'POST',
         url: 'http://localhost:5000/api/bookings/book_flight',
@@ -78,6 +77,22 @@ const BookingDetails = ({ data , chosenClass , returnFlightData , chosenReturnCl
           selectedClass: chosenClass
         }
       })
+      if(returnFlightData !== null) {
+        const res = await axios.request({
+          method: 'POST',
+          url: 'http://localhost:5000/api/bookings/book_flight',
+          headers: {
+              "Authorization" : `Bearer ${JSON.parse(user.access_token)}`
+          },
+          data: {
+            flightId: returnFlightData.flightId,
+            user: user.email,
+            passengers: passengers,
+            selectedClass: chosenReturnClass
+          }
+        })
+        console.log();
+      }
         console.log("Booking -> ",res);
       }
   }

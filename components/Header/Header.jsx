@@ -1,5 +1,6 @@
 import React , { useEffect, useState } from 'react'
 import { useSelector , useDispatch } from 'react-redux';
+import { ink } from 'next/font/google';
 
 import { deleteUser } from '@/Redux/Auth/AT';
 import Modal from '../Modal';
