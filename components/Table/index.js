@@ -1,7 +1,7 @@
 import Passengers from "./Booking/Passengers"
 import TicketFlightDetails from "./Booking/TicketFlightDetails"
 import UserTable from "./Admin/User/UserTable"
-import FlightsTable from "./Admin/FLights/FlightsTable"
+import FlightsTable from "./Admin/Flights/FlightsTable"
 
 const Table = {
     Passengers,
