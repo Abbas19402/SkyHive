@@ -6,6 +6,7 @@ import { saveFlight , saveReturnFlight } from '@/Redux/Flight'
 
 import Styles from '@/styles/scrollbar.module.css'
 import { toast } from 'react-toastify'
+import { setAirlineClass } from '@/Redux/Booking/Class'
 
 const FlightCard = ({ flightData , bookingType , returnFlight }) => {
     const dispatch = useDispatch();
@@ -13,12 +14,13 @@ const FlightCard = ({ flightData , bookingType , returnFlight }) => {
     
     const { _id ,flightId , airline , departureDate , arrivalDate , aircraft , class:airlineClass , from , to , pickupAirport ,  destinationAirport , departureTime , arrivalTime , DAN , PAN , airlineLogo } = flightData;
 
-    
     let options = [];
     const [ selectedClass , setSelectedClass ] = useState('Class');
     const [ selectedReturnClass , setSelectedReturnClass ] = useState('Class');
-    const [ chosenClass , setChosenClass ] = useState({});
+    const [ chosenClass , setChosenClass ] = useState(null);
     const [ chosenReturnClass , setChosenReturnClass ] = useState({});
+    const [ openDropDown , setOpenDropDown ] = useState(false)
+    const [ openReturnDropDown , setOpenReturnDropDown ] = useState(false)
     const [ dates , setDates ] = useState({
         dd: '',
         ad: ''
@@ -44,13 +46,16 @@ const FlightCard = ({ flightData , bookingType , returnFlight }) => {
             router.push({
                 pathname: `/flights/${id}`,
                 query: {
-                    chosenClass: JSON.stringify({data:chosenClass}),
-                    chosenReturnClass: 'null',
                     return: 'null'
                 }
-        }, `/flights/${id}`)
+            }, `/flights/${id}`)
+            dispatch(setAirlineClass({
+                outbound: chosenClass,
+                inbound: null
+            }))
         }
     }
+
     const bookReturn = (id , selectedFlightData , returnFlightData , chosenClass , chosenReturnClass) => {
         if(selectedClass && selectedReturnClass == 'Class') {
             toast.warn('Please choose your class!!')
@@ -60,13 +65,24 @@ const FlightCard = ({ flightData , bookingType , returnFlight }) => {
             router.push({
                 pathname: `/flights/${id}`,
                 query: {
-                    chosenClass: JSON.stringify({data:chosenClass}),
-                    chosenReturnClass: JSON.stringify({data:chosenReturnClass}),
                     return: `${returnFlightData._id}`
                 }
             }, `/flights/${id}?return=${returnFlightData._id}`)
+            dispatch(setAirlineClass({
+                outbound: chosenClass,
+                inbound: chosenReturnClass
+            }))
         }
     }
+
+    const Cost = (chosenAirlineClass) => {
+        if(chosenAirlineClass !== null) {
+            let totalFare = parseInt(chosenAirlineClass.fare) * 1000;
+            return totalFare
+        } else {
+            return 'Choose class!!'
+        }
+      }
 
     const formattedDDate = (dd) => {
         return {
@@ -101,7 +117,7 @@ const FlightCard = ({ flightData , bookingType , returnFlight }) => {
 
   return (
     <div className={`${bookingType == 'return' && 'border-0 border-black'}`}>
-        <div className='w-full h-[40vh] rounded-lg p-3 pb-0'>
+        <div className='w-full h-[40vh] rounded-lg p-3 pb-0 hidden lg:block'>
             <div className="flex flex-row justify-between items-center h-full ">
                 <div className="w-[80%] h-full flex flex-col justify-between items-center">
                     <div className="w-full h-fit bg-white border-t-2 border-l-2 rounded-tl-lg flex flex-row justify-between items-center">
@@ -189,11 +205,17 @@ const FlightCard = ({ flightData , bookingType , returnFlight }) => {
                                         <div className={` mt-1 absolute w-full transition-all duration-300 h-0 group-hover:h-20 origin-top bg-white rounded-md top-10 group:hover:p-5 overflow-hidden flex flex-col justify-center items-start`}>
                                             <div className={`border-1 border-gray-400 w-[98%] h-[98%] rounded overflow-x-hidden overflow-y-auto ${Styles.noScrollbar}`} >
                                                 {airlineClass.map((item , index) => (
+                                                    item.seats.remaining !== '0' ?
                                                     <div key={index} className="w-full min-h-8 h-fit text-center hover:cursor-pointer" onClick={() => {
                                                         setSelectedClass(item.airlineClassName)
                                                         setChosenClass(item)
                                                     }}>
                                                         <span className="text-sm font-medium text-gray-600 whitespace-nowrap hover:text-sky-600">{item.airlineClassName}</span>
+                                                    </div> : <div key={index} className="w-full min-h-8 h-fit text-center hover:cursor-pointer pointer-events-none" onClick={() => {
+                                                        setSelectedClass(item.airlineClassName)
+                                                        setChosenClass(item)
+                                                    }}>
+                                                        <span className="text-sm font-medium text-gray-400 whitespace-nowrap hover:text-sky-600">{item.airlineClassName} (Booked)</span>
                                                     </div>
                                                 ))}
                                             </div>
@@ -221,7 +243,7 @@ const FlightCard = ({ flightData , bookingType , returnFlight }) => {
                 </div>
             </div>
         </div>
-        {bookingType == 'return' && returnFlight !== null && <div className='w-full h-[40vh]  rounded-lg p-3'>
+        {bookingType == 'return' && returnFlight !== null && <div className='hidden lg:block w-full h-[40vh] rounded-lg p-3'>
             <div className="w-full flex justify-between items-center gap-x-5">
                 <div className="h-1 w-full border-2 rounded-full"></div>
                 <div className='bg-neutral-800 px-3 py-0.5 rounded-lg'>
@@ -318,11 +340,17 @@ const FlightCard = ({ flightData , bookingType , returnFlight }) => {
                                         <div className={` mt-1 absolute w-full transition-all duration-300 h-0 group-hover:h-20 origin-top bg-white rounded-md top-10 group:hover:p-5 overflow-hidden flex flex-col justify-center items-start`}>
                                             <div className={`border-1 border-gray-400 w-[98%] h-[98%] rounded overflow-x-hidden overflow-y-auto ${Styles.noScrollbar}`} >
                                                 {returnFlight.class.map((item , index) => (
+                                                    item.seats.remaining !== '0' ?
                                                     <div key={index} className="w-full min-h-8 h-fit text-center hover:cursor-pointer" onClick={() => {
                                                         setSelectedReturnClass(item.airlineClassName)
                                                         setChosenReturnClass(item)
                                                     }}>
                                                         <span className="text-sm font-medium text-gray-600 whitespace-nowrap hover:text-sky-600">{item.airlineClassName}</span>
+                                                    </div> : <div key={index} className="w-full min-h-8 h-fit text-center hover:cursor-pointer pointer-events-none" onClick={() => {
+                                                        setSelectedReturnClass(item.airlineClassName)
+                                                        setChosenReturnClass(item)
+                                                    }}>
+                                                        <span className="text-sm font-medium text-gray-400 whitespace-nowrap hover:text-sky-600">{item.airlineClassName} (Booked)</span>
                                                     </div>
                                                 ))}
                                             </div>
@@ -350,6 +378,132 @@ const FlightCard = ({ flightData , bookingType , returnFlight }) => {
                 </div>
             </div>
         </div>}
+        <div className="lg:hidden block">
+            <div className="w-full h-fit border-2 rounded-lg border-black">
+                <div className="w-full flex flex-col justify-start items-start">
+
+                    <div className="flex flex-row justify-start items-center gap-x-2  w-full">
+                        <div className="relative w-12 h-12 overflow-hidden m-2">
+                            <Image src={`${airlineLogo}`} loader={()=> airlineLogo} fill={true} alt='airline-log'/>
+                        </div>
+                        <div className="w-fit h-12 flex flex-col justify-center items-start">
+                            <span className="text-sm font-medium capitalize whitespace-nowrap">{airline}</span>
+                        </div>
+                    </div>
+                    <div className="flex flex-row justify-between items-center px-2 w-full">
+                        <div className="w-full h-fit flex flex-col justify-center items-center ">
+                            <span className="text-xs font-bold text-gray-600 tracking-wider capitalize ">{dates.dd}</span>
+                            <span className="text-md font-extrabold tracking-wider">{departureTime}</span>
+                            <span className="text-xs font-bold text-gray-600 tracking-wider capitalize ">{from}</span>
+                        </div>
+                        <div className="w-full h-1 bg-teal-500 flex flex-col justify-center items-center "></div>
+                        <div className="w-full h-fit flex flex-col justify-center items-center ">
+                            <span className="text-xs font-bold text-gray-600 tracking-wider capitalize ">{dates.ad}</span>
+                            <span className="text-md font-extrabold tracking-wider">{arrivalTime}</span>
+                            <span className="text-xs font-bold text-gray-600 tracking-wider capitalize ">{to}</span>
+                        </div>
+                    </div>
+                    <div className="flex flex-row justify-between items-center w-full py-2 px-4 gap-x-4">
+                        <div className="relative w-full h-7 bg-white group rounded-lg" onClick={()=> setOpenDropDown(!openDropDown)}>
+                            <div className="w-full h-full flex flex-col justify-center items-start bg-amber-100 rounded-lg">
+                                <div className='w-full flex justify-center items-center px-3'>
+                                    <span className="text-sm tracking-tight uppercase my-auto leading-tight whitespace-nowrap">{selectedClass}</span>
+                                </div>
+                            </div>
+                            <div className={`border border-black mt-1 absolute w-full transition-all duration-300 ${openDropDown ? 'h-20' : 'h-0 border-0' }  origin-top bg-white rounded-md top-10 group:hover:p-5 overflow-hidden flex flex-col justify-center items-start z-10`}>
+                                <div className={`border-1 border-gray-400 w-[98%] h-[98%] rounded overflow-x-hidden overflow-y-auto ${Styles.noScrollbar}`} >
+                                    {airlineClass.map((item , index) => (
+                                        item.seats.remaining !== '0' ?
+                                        <div key={index} className="w-full min-h-8 h-fit text-center hover:cursor-pointer" onClick={() => {
+                                            setSelectedClass(item.airlineClassName)
+                                            setChosenClass(item)
+                                            setOpenDropDown(!openDropDown)
+                                        }}>
+                                            <span className="text-sm font-medium text-gray-600 whitespace-nowrap hover:text-sky-600">{item.airlineClassName}</span>
+                                        </div> : <div key={index} className="w-full min-h-8 h-fit text-center hover:cursor-pointer pointer-events-none" onClick={() => {
+                                            setSelectedClass(item.airlineClassName)
+                                            setChosenClass(item)
+                                            setOpenDropDown(!openDropDown)
+                                        }}>
+                                            <span className="text-sm font-medium text-gray-400 whitespace-nowrap hover:text-sky-600">{item.airlineClassName} (Booked)</span>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+                        </div>
+                        <div className="w-fit h-fit flex flex-col justify-center items-center ">
+                            <span className="text-md font-bold text-black tracking-wider capitalize whitespace-nowrap">{Cost(chosenClass)}</span>
+                        </div>
+                    </div>
+                    {bookingType == 'return' && returnFlight !== null && <>
+                    <div className="flex flex-row justify-start items-center gap-x-2  w-full">
+                        <div className="relative w-12 h-12 overflow-hidden m-2">
+                            <Image src={`${returnFlight.airlineLogo}`} loader={()=> returnFlight.airlineLogo} fill={true} alt='airline-log'/>
+                        </div>
+                        <div className="w-fit h-12 flex flex-col justify-center items-start">
+                            <span className="text-sm font-medium capitalize whitespace-nowrap">{returnFlight.airline}</span>
+                        </div>
+                    </div>
+                    <div className="flex flex-row justify-between items-center px-2 w-full">
+                        <div className="w-full h-fit flex flex-col justify-center items-center ">
+                            <span className="text-xs font-bold text-gray-600 tracking-wider capitalize ">{dates.dd}</span>
+                            <span className="text-md font-extrabold tracking-wider">{returnFlight.departureTime}</span>
+                            <span className="text-xs font-bold text-gray-600 tracking-wider capitalize ">{returnFlight.from}</span>
+                        </div>
+                        <div className="w-full h-1 bg-teal-500 flex flex-col justify-center items-center "></div>
+                        <div className="w-full h-fit flex flex-col justify-center items-center ">
+                            <span className="text-xs font-bold text-gray-600 tracking-wider capitalize ">{dates.ad}</span>
+                            <span className="text-md font-extrabold tracking-wider">{returnFlight.arrivalTime}</span>
+                            <span className="text-xs font-bold text-gray-600 tracking-wider capitalize ">{returnFlight.to}</span>
+                        </div>
+                    </div>
+                    <div className="flex flex-row justify-between items-center w-full py-2 px-4 gap-x-4">
+                        <div className="relative w-full h-7 bg-white group rounded-lg" onClick={()=> setOpenReturnDropDown(!openReturnDropDown)}>
+                            <div className="w-full h-full flex flex-col justify-center items-start bg-amber-100 rounded-lg">
+                                <div className='w-full flex justify-center items-center px-3'>
+                                    <span className="text-sm tracking-tight uppercase my-auto leading-tight whitespace-nowrap">{selectedReturnClass}</span>
+                                </div>
+                            </div>
+                            <div className={`border border-black mt-1 absolute w-full transition-all duration-300 ${openReturnDropDown ? 'h-20' : 'h-0 border-0' } origin-top bg-white rounded-md top-10 group:hover:p-5 overflow-hidden flex flex-col justify-center items-start z-10`}>
+                                <div className={`border-1 border-gray-400 w-[98%] h-[98%] rounded overflow-x-hidden overflow-y-auto ${Styles.noScrollbar}`} >
+                                    {returnFlight.class.map((item , index) => (
+                                        item.seats.remaining !== '0' ?
+                                        <div key={index} className="w-full min-h-8 h-fit text-center hover:cursor-pointer" onClick={() => {
+                                            setSelectedReturnClass(item.airlineClassName)
+                                            setChosenReturnClass(item)
+                                            setOpenReturnDropDown(!openReturnDropDown)
+                                        }}>
+                                            <span className="text-sm font-medium text-gray-600 whitespace-nowrap hover:text-sky-600">{item.airlineClassName}</span>
+                                        </div> : <div key={index} className="w-full min-h-8 h-fit text-center hover:cursor-pointer pointer-events-none" onClick={() => {
+                                            setSelectedReturnClass(item.airlineClassName)
+                                            setChosenReturnClass(item)
+                                            setOpenReturnDropDown(!openReturnDropDown)
+                                        }}>
+                                            <span className="text-sm font-medium text-gray-400 whitespace-nowrap hover:text-sky-600">{item.airlineClassName} (Booked)</span>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+                        </div>
+                        <div className="w-fit h-fit flex flex-col justify-center items-center ">
+                            <span className="text-md font-bold text-black tracking-wider capitalize whitespace-nowrap">{Cost(chosenReturnClass)}</span>
+                        </div>
+                    </div>
+                    </>}
+                    <div className="w-full flex justify-center items-center">
+                        <button onClick={()=> {
+                            if(bookingType == 'return' && returnFlight !== null) {
+                                bookReturn(_id , flightData , returnFlight , chosenClass , chosenReturnClass )
+                            } else {
+                                book(_id , flightData , chosenClass)
+                            }
+                        } } className="w-[90%] h-7 flex flex-col justify-center items-center bg-neutral-800 m-2 rounded">
+                            <span className="text-md font-medium tracking-wide text-white">Book</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
   )
 }

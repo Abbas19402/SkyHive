@@ -6,6 +6,8 @@ import { combineReducers } from '@reduxjs/toolkit'
 import GetAT from './Auth/AT';
 import GetAirportsDataAPI from './Airports'
 import FlightManager from './Flight';
+import TicketReducer from './Booking/Ticket';
+import AirlineClassReducer from './Booking/Class';
 
 const persistConfig = {
   key: 'root',  
@@ -15,7 +17,9 @@ const persistConfig = {
 const reducer = combineReducers({
   userData: GetAT,
   airportData: GetAirportsDataAPI,
-  Flights: FlightManager
+  Flights: FlightManager,
+  ticket: TicketReducer,
+  airlineClass: AirlineClassReducer
 })
 const persistedReducer = persistReducer(persistConfig , reducer)
 

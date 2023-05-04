@@ -16,7 +16,7 @@ const ProfileForm = () => {
           }}
         />
       </div>
-      <form className='py-10 px-32'>
+      <form className='py-10 px-5 lg:px-32'>
       <div className="space-y-12">
         <div className="border-b border-gray-900/10 pb-12">
           <h2 className="text-base font-semibold leading-7 text-gray-900">Profile</h2>

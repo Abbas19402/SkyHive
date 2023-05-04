@@ -1,11 +1,16 @@
 import React , { useEffect, useState } from 'react'
-import { useSelector } from 'react-redux';
+import { useSelector , useDispatch } from 'react-redux';
 import Icon from '@/components/Icons';
 import Forms from '..';
 import { toast } from 'react-toastify';
 import axios from 'axios';
+import { useRouter } from 'next/router';
+import { setTickets , setBooking } from '@/Redux/Booking/Ticket';
 
 const BookingDetails = ({ data , chosenClass , returnFlightData , chosenReturnClass }) => {
+  console.log(data);
+  const dispatch = useDispatch();
+  const router = useRouter();
   const user = useSelector(state => state.userData.user);
   const [ passengerCount , setpassengerCount ] = useState(1);
   const [ passengers , setPassengers ] = useState([]);
@@ -17,7 +22,7 @@ const BookingDetails = ({ data , chosenClass , returnFlightData , chosenReturnCl
   }
 
   const TaxImplied = (cost, airlineClass , NOP) => {
-    if(airlineClass.data.airlineClassName.toLowerCase() == 'economy') {
+    if(airlineClass.airlineClassName.toLowerCase() == 'economy') {
       let taxCost = cost * 5 / 100 * passengerCount
       return taxCost
     } else {
@@ -28,9 +33,11 @@ const BookingDetails = ({ data , chosenClass , returnFlightData , chosenReturnCl
   
   const Cost = () => {
     let totalFareInReturn = 0
-    if(returnFlightData !== null) totalFareInReturn = parseInt(chosenReturnClass.data.fare) * 1000 * passengerCount;
+    if(returnFlightData !== null && chosenReturnClass !== null) {
+      totalFareInReturn = parseInt(chosenReturnClass.fare) * passengerCount
+    };
 
-    let totalFare = parseInt(chosenClass.data.fare) * 1000 * passengerCount;
+    let totalFare = parseInt(chosenClass.fare) * passengerCount;
     let finalFare = 0 , tax = {
       outgoing: 0,
       returning: 0
@@ -44,7 +51,7 @@ const BookingDetails = ({ data , chosenClass , returnFlightData , chosenReturnCl
       finalFare = totalFare + tax.outgoing;
     }
     return { 
-      outgoingFare: parseInt(chosenClass.data.fare) * 1000 * passengerCount,
+      outgoingFare: parseInt(chosenClass.fare) * passengerCount,
       totalFare: totalFare + totalFareInReturn , 
       returnFare: totalFareInReturn ,
       tax: tax , 
@@ -64,37 +71,49 @@ const BookingDetails = ({ data , chosenClass , returnFlightData , chosenReturnCl
         class: chosenClass,
         totalCost: Cost().finalFare
       }
-      const res = await axios.request({
-        method: 'POST',
-        url: 'http://localhost:5000/api/bookings/book_flight',
-        headers: {
-            "Authorization" : `Bearer ${JSON.parse(user.access_token)}`
-        },
-        data: {
-          flightId: booking.flightId,
-          user: user.email,
-          passengers: passengers,
-          selectedClass: chosenClass
-        }
-      })
-      if(returnFlightData !== null) {
+      try {
+        let returnRes = null;
         const res = await axios.request({
           method: 'POST',
-          url: 'http://localhost:5000/api/bookings/book_flight',
+          url: 'https://skyhive-admin.vercel.app/api/bookings/book_flight',
           headers: {
               "Authorization" : `Bearer ${JSON.parse(user.access_token)}`
           },
           data: {
-            flightId: returnFlightData.flightId,
+            flightId: booking.flightId,
             user: user.email,
             passengers: passengers,
-            selectedClass: chosenReturnClass
+            selectedClass: chosenClass
           }
         })
-        console.log();
+        if(returnFlightData !== null) {
+          returnRes = await axios.request({
+            method: 'POST',
+            url: 'https://skyhive-admin.vercel.app/api/bookings/book_flight',
+            headers: {
+                "Authorization" : `Bearer ${JSON.parse(user.access_token)}`
+            },
+            data: {
+              flightId: returnFlightData.flightId,
+              user: user.email,
+              passengers: passengers,
+              selectedClass: chosenReturnClass
+            }
+          })
+        }
+        router.push('/checkout/pay')
+        dispatch(setTickets({
+          outbound: res,
+          inbound: returnRes 
+        }))
+        dispatch(setBooking({
+          outbound: res.data.data.booking_id,
+          inbound: returnFlightData !== null ? returnRes.data.data.booking_id : null 
+        }))
+      } catch(error) {
+        console.log(error)
       }
-        console.log("Booking -> ",res);
-      }
+    }
   }
   return (
     <div className='w-full'>
@@ -151,11 +170,11 @@ const BookingDetails = ({ data , chosenClass , returnFlightData , chosenReturnCl
           <div className="flex flex-col justify-start items-start border-b border-gray-900/10 my-10 pb-5">
             <h2 className="text-base font-semibold leading-7 text-gray-900">Passenger Information</h2>
             <p className="mt-1 text-sm leading-6 text-gray-600">Use a permanent address where you can receive mail.</p>
-            <div className="w-[30%] mt-4">
+            <div className="md:w-[30%] mt-4 w-full">
               <label htmlFor="passengerCount" className="block text-sm font-medium leading-6 text-gray-900">
                 No. of Passengers
               </label>
-              <div className="mt-2 flex flex-col justify-start items-start">
+              <div className="my-2 flex flex-col justify-start items-start w-full">
                 <div className="flex flex-row justify-start items-center w-full">
                   <input
                     type="text"
@@ -184,7 +203,10 @@ const BookingDetails = ({ data , chosenClass , returnFlightData , chosenReturnCl
               </div>}
             </div>
             {[...Array(passengerCount)].map( (item , index) => (
-              <div key={index}>
+              <div key={index} className='w-full'>
+                <span className="text-xl capitalize">
+                  Passenger {index+1}:
+                </span>
                 <Forms.booking.passenger savePassenger={savePassenger}/>
               </div>
               ) )}
@@ -195,7 +217,7 @@ const BookingDetails = ({ data , chosenClass , returnFlightData , chosenReturnCl
             <p className="mt-1 text-sm leading-6 text-gray-600">Confirm your flight details!!.</p>
             
             <Forms.booking.flight flightData={data}/>
-            {returnFlightData !== null && <div className='mt-14'>
+            {returnFlightData !== null && chosenReturnClass !== null && <div className='mt-14'>
               <h2 className="text-base font-semibold leading-7 text-gray-600">Return Flight Information</h2>
               <Forms.booking.flight flightData={returnFlightData} />
             </div>}
@@ -204,14 +226,14 @@ const BookingDetails = ({ data , chosenClass , returnFlightData , chosenReturnCl
           <div className="flex flex-col justify-start items-center border-b border-gray-900/10 my-10 pb-5 w-full">
             <div className='flex flex-col justify-start items-center w-full'>
               <div className="flex flex-col w-full mb-2">
-                <span className="text-black font-medium text-base">Fare</span>
+                <span className="text-black font-medium text-base">Fare:</span>
                 <div className="w-full pl-10 flex flex-col justify-start items-start">
                   <div className="flex flex-row w-full justify-between items-center">
-                    <span className="text-gray-600 font-medium text-base">Outgoing</span>
+                    <span className="text-gray-600 font-medium text-base">Outbound</span>
                     <span className="text-gray-600 font-medium text-sm">{Cost().outgoingFare}</span>
                   </div>
                   <div className="flex flex-row w-full justify-between items-center">
-                    <span className="text-gray-600 font-medium text-base">Returning</span>
+                    <span className="text-gray-600 font-medium text-base">Inbound (Return)</span>
                     <span className="text-gray-600 font-medium text-sm">{Cost().returnFare}</span>
                   </div>
                 </div>
@@ -225,14 +247,14 @@ const BookingDetails = ({ data , chosenClass , returnFlightData , chosenReturnCl
               </div>
 
               <div className="flex flex-col w-full mb-2">
-                <span className="text-black font-medium text-base">Tax</span>
+                <span className="text-black font-medium text-base">Tax:</span>
                 <div className="w-full pl-10 flex flex-col justify-start items-start">
                   <div className="flex flex-row w-full justify-between items-center">
-                    <span className="text-gray-600 font-medium text-base">Outgoing</span>
+                    <span className="text-gray-600 font-medium text-base">Outbound</span>
                     <span className="text-gray-600 font-medium text-sm">{Cost().tax.outgoing}</span>
                   </div>
                   <div className="flex flex-row w-full justify-between items-center">
-                    <span className="text-gray-600 font-medium text-base">Returning</span>
+                    <span className="text-gray-600 font-medium text-base">Inbound (Return)</span>
                     <span className="text-gray-600 font-medium text-sm">{Cost().tax.returning}</span>
                   </div>
                 </div>

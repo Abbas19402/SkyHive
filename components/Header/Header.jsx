@@ -1,15 +1,16 @@
-import React , { useEffect, useState } from 'react'
+import React , { useState } from 'react'
 import { useSelector , useDispatch } from 'react-redux';
-import { ink } from 'next/font/google';
 
 import { deleteUser } from '@/Redux/Auth/AT';
 import Modal from '../Modal';
 import Icon from '../Icons';
 import NavItems from '@/Constants/NavItems'
 import Link from 'next/link';
+import { useRouter } from 'next/router';
 import { toast } from 'react-toastify'
 
 const Header = () => {
+    const router = useRouter();
     const dispatch = useDispatch(deleteUser);
     const user = useSelector(state => state.userData.user);
     const loginState = useSelector(state => state.userData.loginStatus);
@@ -51,7 +52,7 @@ const Header = () => {
                         </div>
                         
                     </div>
-                    <div className="hidden lg:flex flex-col justify-center items-start gap-y-2 absolute w-full rounded top-14 overflow-hidden bg-white p-2 transition-all duration-300 group-hover:h-fit h-0">
+                    <div className="hidden lg:flex flex-col justify-center items-start gap-y-2 absolute w-full rounded top-14 overflow-hidden bg-white p-2 transition-all duration-300 lg:group-hover:h-fit h-0">
                         {loginState && <>
                             <Link href={`/user/profile`} className="w-full h-10 bg-slate-50 rounded-md flex flex-row justify-around items-center overflow-hidden transition-all duration-300 hover:cursor-pointer">
                                 <div>
@@ -84,10 +85,41 @@ const Header = () => {
                 <div className={`transition-all duration-500 ease-in-out ${showSidebar ? 'w-[70vw]' : 'w-0'} h-full flex flex-col justify-center items-center`}>
                     <div className=" w-[80%] flex flex-col justify-center items-center gap-y-5">
                         {NavItems.map((item , key) => (
-                            <div key={key} className='flex flex-col gap-y-1 p-1 hover:cursor-pointer hover:scale-110 transition-all duration-300 rounded'>
+                            <div key={key} onClick={()=> {
+                                router.push(`${item.href}`)
+                                setShowSidebar(false)
+                            }} className='flex flex-col gap-y-1 p-1 hover:cursor-pointer hover:scale-110 transition-all duration-300 rounded'>
                                 <span className="text-lg text-black tracking-wide">{item.name}</span>
                             </div>
                         ))}
+                    </div>
+                    <div className="flex flex-col justify-center items-start gap-y-2 absolute w-full rounded top-1 overflow-hidden bg-white p-2 transition-all duration-300 h-fit">
+                        {loginState && <>
+                            <div className="w-full h-10 bg-slate-100 rounded-md flex flex-row justify-around items-center overflow-hidden transition-all duration-300 hover:cursor-pointer">
+                                <div>
+                                    <span className='text-md font-medium text-black tracking-wide Capitalize'>{user.username}</span>
+                                </div>
+                            </div>
+                            <Link href={`/user/profile`} className="w-full h-10 bg-slate-100 rounded-md flex flex-row justify-start gap-x-4 px-4 items-center overflow-hidden transition-all duration-300 hover:cursor-pointer">
+                                <div>
+                                    <Icon.User className={`fill-gray-600`} />
+                                </div>
+                                <div>
+                                    <span className='text-md font-medium text-gray-500 tracking-wide Capitalize'>Profile</span>
+                                </div>
+                            </Link>
+                            <div className="w-full h-10 bg-slate-100 rounded-md flex flex-row justify-start gap-x-4 px-4 items-center overflow-hidden transition-all duration-300 hover:cursor-pointer" onClick={() => {
+                                dispatch(deleteUser())
+                                toast.success('You are logged out!!')
+                            }}>
+                                <div>
+                                    <Icon.LogoutIcon className={`fill-gray-600`} />
+                                </div>
+                                <div>
+                                    <span className='text-md font-medium text-gray-500 tracking-wide Capitalize'>Logout</span>
+                                </div>
+                            </div>
+                        </>}
                     </div>
                 </div>
             </div>

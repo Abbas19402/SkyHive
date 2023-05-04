@@ -1,6 +1,7 @@
 import React from 'react'
 
 const FlightDetailForm = ({ flightData }) => {
+    console.log(flightData);
   return (
         <div className="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6 w-full">
             <div className="sm:col-span-3 opacity-70 pointer-events-none">

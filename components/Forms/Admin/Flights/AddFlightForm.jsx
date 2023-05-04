@@ -42,7 +42,7 @@ export default function AddFlightsForm() {
         try {
             const res = await axios.request({
                 method: 'POST',
-                url: 'http://localhost:5000/api/flights/addFlights',
+                url: 'https://skyhive-admin.vercel.app/api/flights/addFlights',
                 headers: {
                     "Authorization" : `Bearer ${JSON.parse(access_token)}`
                 },

@@ -4,27 +4,37 @@ import Link from 'next/link'
 
 const AdminPanelPage = () => {
   return (
-    <div className="w-screen min-h-screen py-5">
-      <div className="w-fit h-full flex justify-start items-start p-3 bg-neutral-200 rounded-lg mx-3">
-        <div className="w-fit h-fit rounded-xl flex flex-row justify-center items-center gap-x-3 px-2 py-1">
+    <div className="w-screen min-h-screen py-5 flex flex-row justify-start items-start">
+      <Link href={'/admin/panel/flights/add'} className=" transition-all duration-300 hover:border-neutral-500 border-2 border-neutral-300 w-fit h-full flex justify-start items-start hover:bg-yellowy-700/50 rounded-lg mx-3">
+        <div className="w-fit h-fit rounded-xl flex flex-col gap-y-2 justify-center bg-neutral-200/50 items-center gap-x-3 px-5 py-4">
           <span className="text-3xl text-gray-700 tracking-wide font-semibold">
             Add Flights
           </span>
-          <Link href={'/admin/panel/flights/add'} className='border-2 border-transparent transition-all duration-300 hover:scale-125 hover:border-gray-300 px-3 py-1.5 rounded-md bg-neutral-800'>
-            <Icon.Add className="fill-gray-300" />
-          </Link>
+          <div>
+            <Icon.Add className="fill-neutral-800" />
+          </div>
         </div>
-      </div>
-      <div className="w-fit h-full flex justify-start items-start p-3 bg-neutral-200 rounded-lg mx-3 mt-5">
-        <div className="w-fit h-fit rounded-xl flex flex-row justify-center items-center gap-x-3 px-2 py-1">
+      </Link>
+      <Link href={'/admin/panel/users'} className=" transition-all duration-300 hover:border-neutral-500 border-2 border-neutral-300 w-fit h-full flex justify-start items-start hover:bg-cyan-700/50 rounded-lg mx-3">
+        <div className="w-fit h-fit rounded-xl flex flex-col gap-y-2 justify-center bg-neutral-200/50 items-center gap-x-3 px-5 py-4">
           <span className="text-3xl text-gray-700 tracking-wide font-semibold">
-            Get All Users
+            All Users
           </span>
-          <Link href={'/admin/panel/users'} className='border-2 border-transparent transition-all duration-300 hover:scale-125 hover:border-gray-300 px-3 py-1.5 rounded-md bg-neutral-800'>
-            <Icon.User className="fill-gray-300" />
-          </Link>
+          <div >
+            <Icon.User className="fill-neutral-800" />
+          </div>
         </div>
-      </div>
+      </Link>
+      <Link href={'/admin/panel/flights'} className=" transition-all duration-300 hover:border-neutral-500 border-2 border-neutral-300 w-fit h-full flex justify-start items-start hover:bg-rose-700/50 rounded-lg mx-3">
+        <div className="w-fit h-fit rounded-xl flex flex-col gap-y-2 justify-center bg-neutral-200/50 items-center gap-x-3 px-5 py-4">
+          <span className="text-3xl text-gray-700 tracking-wide font-semibold">
+            All Flights
+          </span>
+          <div>
+            <Icon.Flight className="fill-neutral-800" />
+          </div>
+        </div>
+      </Link>
     </div>
   )
 }

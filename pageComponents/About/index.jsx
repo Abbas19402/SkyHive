@@ -2,7 +2,7 @@ import React from 'react'
 
 const AboutUsPage = () => {
   return (
-    <div className="w-full h-full overflow-x-hidden py-10 px-32">
+    <div className="w-full h-full overflow-x-hidden py-10 px-5 lg:px-32">
       <div
         className="fixed inset-x-0 top-[-10rem] -z-10 transform-gpu overflow-hidden blur-3xl sm:top-[-20rem]"
         aria-hidden="true"
@@ -16,19 +16,19 @@ const AboutUsPage = () => {
         />
       </div>
       <div className="flex flex-col justify-center items-center gap-y-6">
-        <span className="text-justify tracking-wide text-2xl font-light leading-relaxed ">
+        <span className="text-justify tracking-wide text-lg md:text-2xl font-light leading-relaxed ">
           Welcome to SkyHive! We are dedicated to providing you with a convenient and seamless travel experience. Our platform offers a user-friendly interface that allows you to easily search and compare flights from a range of top airlines across the world.
         </span>
 
-        <span className="text-justify tracking-wide text-2xl font-light leading-relaxed ">
+        <span className="text-justify tracking-wide text-lg md:text-2xl font-light leading-relaxed ">
           At our website, we understand that finding the right flight can be stressful, which is why we provide a hassle-free booking process. We are available 24/7 to assist you with any queries you may have, from booking your flight to making changes to your itinerary.
         </span>
 
-        <span className="text-justify tracking-wide text-2xl font-light leading-relaxed "> 
+        <span className="text-justify tracking-wide text-lg md:text-2xl font-light leading-relaxed "> 
           We believe that traveling should be enjoyable, which is why we provide you with helpful information and tips to make your journey smoother. Our website offers everything you need to book your ideal flight at competitive prices.
         </span>
 
-        <span className="text-justify tracking-wide text-2xl font-light leading-relaxed "> 
+        <span className="text-justify tracking-wide text-lg md:text-2xl font-light leading-relaxed "> 
           Thank you for choosing SkyHive. We are committed to providing exceptional customer service and ensuring that your travel experience is memorable.
         </span>
       </div>

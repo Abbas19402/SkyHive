@@ -4,12 +4,16 @@ import axios from 'axios'
 import { useDispatch } from 'react-redux'
 import { getUser } from '@/Redux/Auth/AT'
 import { toast } from 'react-toastify'
+import Icon from '@/components/Icons'
 
 const LoginForm = ({ loginStatus , setLoginStatus , setShowModal }) => {
     const dispatch = useDispatch();
 
     const [ error, setError ] = useState('');
+    const [ loading , setLoading ] = useState(false);
+
     const login = async(e) => {
+        setLoading(true);
         e.preventDefault();
         const form = new FormData(e.currentTarget);
         let values = {};
@@ -17,7 +21,7 @@ const LoginForm = ({ loginStatus , setLoginStatus , setShowModal }) => {
             values[pair[0]] = pair[1];
         }
         try {
-            const response = await axios.post('http://localhost:5000/api/auth/login', {
+            const response = await axios.post('https://skyhive-admin.vercel.app/api/auth/login', {
                 email: values.email,
                 password: values.password
             })
@@ -26,12 +30,15 @@ const LoginForm = ({ loginStatus , setLoginStatus , setShowModal }) => {
                 toast.dark(`Welcome back ${response.data.data.username}`, {
                     icon: <span>&#128526;</span>
                 })
+                setLoading(false)
             } else {
                 toast.success('Logged in successfully!!')
+                setLoading(false)
             }
             setShowModal(false)
         } catch (error) {
             console.log(error)
+            setLoading(false)
             setError(error.response.data.message)
         }
     }
@@ -49,11 +56,11 @@ const LoginForm = ({ loginStatus , setLoginStatus , setShowModal }) => {
                 <div className="flex flex-col gap-y-4 w-full h-full">
                     <div className="flex flex-col justify-around items-start gap-y-2">
                         <label htmlFor='email' className="text-md text-gray-800 font-medium tracking-wide">Email</label>
-                        <input type="text" name="email"  className="w-full border-2 p-1 rounded-md"/>
+                        <input type="email" name="email"  className="w-full border-2 p-1 rounded-md"/>
                     </div>
                     <div className="flex flex-col justify-around items-start gap-y-2">
                         <label htmlFor='password' className="text-md text-gray-800 font-medium tracking-wide">Password</label>
-                        <input type="password" name="password"  className="w-full border-2 p-1 rounded-md"/>
+                        <input type="password" name="password" required={true} className="w-full border-2 p-1 rounded-md"/>
                     </div>
                 </div>
 
@@ -84,7 +91,9 @@ const LoginForm = ({ loginStatus , setLoginStatus , setShowModal }) => {
                     className="group relative flex w-full justify-center rounded-md bg-neutral-800 px-3 py-2 text-sm font-semibold text-white hover:bg-neutral-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
                 >
                     <span className="absolute inset-y-0 left-0 flex items-center pl-3">
-                    <LockClosedIcon className="h-5 w-5 text-neutral-500 group-hover:text-neutral-400" aria-hidden="true" />
+                    {loading? <div className='animate-spin'>
+                            <Icon.Loader />
+                        </div> : <LockClosedIcon className="h-5 w-5 text-neutral-500 group-hover:text-neutral-400" aria-hidden="true" />}
                     </span>
                     Login
                 </button>

@@ -70,16 +70,20 @@ const SearchFlights = () => {
         values[pair[0]] = pair[1];
       }
 
+      const isFormValid = Object.values(values).every( item => item !== '' );
+      toast.info(isFormValid)
+
       const options = {
         method: "POST",
-        url: "http://localhost:5000/api/flights/search",
+        url: "https://skyhive-admin.vercel.app/api/flights/search",
         headers: {
           Authorization: `Bearer ${JSON.parse(access_token)}`,
         },
         data: values,
       };
 
-      axios
+      if(isFormValid) {
+        axios
         .request(options)
         .then(function (response) {
           setLoading(false)
@@ -121,6 +125,10 @@ const SearchFlights = () => {
             toast.warn('Your session has expired. Please login again!!')
           }
         });
+      } else {
+        setLoading(false)
+      }
+      
     } else {
       setLoading(false)
       toast.warn('Login Required!!')
@@ -152,7 +160,7 @@ const SearchFlights = () => {
                   <label htmlFor='from' className="text-md font-medium tracking-wide">From</label>
                 </div>
                 <div className="flex flex-row justify-around items-center w-full px-2">
-                  <Select options={airportsData} name='from' className='w-full' placeholder="Pickup" />
+                  <Select options={airportsData} required name='from' className='w-full' placeholder="Pickup" />
                 </div>  
               </div>
             </div>
@@ -162,7 +170,7 @@ const SearchFlights = () => {
                   <label htmlFor='to' className="text-md font-medium tracking-wide">To</label>
                 </div>
                 <div className="flex flex-row justify-around items-center w-full px-2">
-                  <Select options={airportsData} name='to' className='w-full' placeholder="Destination" />
+                  <Select options={airportsData} required name='to' className='w-full' placeholder="Destination" />
                 </div>
               </div>
             </div>
@@ -176,6 +184,7 @@ const SearchFlights = () => {
                     dateFormat="dd/mm/yyyy" 
                     selected={departureDate}
                     name='departure' 
+                    required
                     onSelect={()=>setIsDateSelected(true)} 
                     onChange={(date) => setDepartureDate(date)} 
                     className='mx-auto rounded-md w-full font-medium tracking-wide border-[1px] hover:border-sky-600 border-gray-300' 
@@ -197,6 +206,7 @@ const SearchFlights = () => {
                       dateFormat="dd/mm/yyyy" 
                       selected={returnDate} 
                       name='returnDate'
+                      required={true}
                       disabled={!isReturnSelected}
                       onSelect={()=>setIsDateSelected(true)} 
                       onChange={(date) => setReturnDate(date)} 
@@ -208,10 +218,10 @@ const SearchFlights = () => {
               </div>
               <div className="lg:hidden flex w-full h-[40%] flex-row justify-start items-center gap-x-3 px-4 py-1">
               <div className='flex flex-row justify-start items-center gap-x-2'>
-                <input type="radio" name="booking_type" onChange={()=> setIsReturnSelected(false)} value={'one-way'}/> <label htmlFor="booking_type" className="text-md font-medium tracking-wide">One Way</label>  
+                <input type="radio" required name="booking_type" onChange={()=> setIsReturnSelected(false)} value={'one-way'}/> <label htmlFor="booking_type" className="text-md font-medium tracking-wide">One Way</label>  
               </div>
               <div className='flex flex-row justify-start items-center gap-x-2'>
-                <input type="radio" name="booking_type" onChange={()=> setIsReturnSelected(true)} value={'return'}/> <label htmlFor="booking_type" className="text-md font-medium tracking-wide">Return</label>  
+                <input type="radio" required name="booking_type" onChange={()=> setIsReturnSelected(true)} value={'return'}/> <label htmlFor="booking_type" className="text-md font-medium tracking-wide">Return</label>  
               </div>
             </div>
               <div className="w-full h-[40%] md:h-full flex justify-center items-end px-4 lg:pr-4 pb-3 md:pb-0">
@@ -234,10 +244,10 @@ const SearchFlights = () => {
             </div>
             <div className="hidden lg:flex w-full h-[40%] flex-row justify-start items-center gap-x-3 px-4 py-1">
               <div className='flex flex-row justify-start items-center gap-x-2'>
-                <input type="radio" name="booking_type" onChange={()=> setIsReturnSelected(false)} value={'one-way'}/> <label htmlFor="booking_type" className="text-md font-medium tracking-wide">One Way</label>  
+                <input type="radio" required name="booking_type" onChange={()=> setIsReturnSelected(false)} value={'one-way'}/> <label htmlFor="booking_type" className="text-md font-medium tracking-wide">One Way</label>  
               </div>
               <div className='flex flex-row justify-start items-center gap-x-2'>
-                <input type="radio" name="booking_type" onChange={()=> setIsReturnSelected(true)} value={'return'}/> <label htmlFor="booking_type" className="text-md font-medium tracking-wide">Return</label>  
+                <input type="radio" required name="booking_type" onChange={()=> setIsReturnSelected(true)} value={'return'}/> <label htmlFor="booking_type" className="text-md font-medium tracking-wide">Return</label>  
               </div>
             </div>
           </div>

@@ -15,7 +15,7 @@ const SignupForm = ({ loginStatus , setLoginStatus , setShowModal }) => {
         }
         if(values.confirmPassword === values.password) {
             try {
-                const response = await axios.post('http://localhost:5000/api/auth/signup', {
+                const response = await axios.post('https://skyhive-admin.vercel.app/api/auth/signup', {
                     username: values.username,
                     email: values.email,
                     password: values.password

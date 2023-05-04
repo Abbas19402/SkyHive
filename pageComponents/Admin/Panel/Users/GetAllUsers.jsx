@@ -1,120 +1,53 @@
-import React from 'react'
+import Modal from "@/components/Modal";
+import Table from "@/components/Table";
+import axios from "axios";
+import React, { useEffect, useState } from "react";
 
 const GetAllUsers = () => {
-  return (
-    <div className='p-20'>
-        <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
-    <table class="w-full text-sm text-left text-gray-500 ">
-        <thead class="text-xs text-gray-700 uppercase bg-gray-200 ">
-            <tr>
-                <th scope="col" class="px-6 py-3">
-                    Product name
-                </th>
-                <th scope="col" class="px-6 py-3">
-                    Color
-                </th>
-                <th scope="col" class="px-6 py-3">
-                    Category
-                </th>
-                <th scope="col" class="px-6 py-3">
-                    Price
-                </th>
-                <th scope="col" class="px-6 py-3">
-                    Action
-                </th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr class="bg-white border-b ">
-                <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">
-                    Apple MacBook Pro 17"
-                </th>
-                <td class="px-6 py-4">
-                    Silver
-                </td>
-                <td class="px-6 py-4">
-                    Laptop
-                </td>
-                <td class="px-6 py-4">
-                    $2999
-                </td>
-                <td class="px-6 py-4">
-                    <a href="#" class="font-medium text-blue-600 dark:text-blue-500 hover:underline">Edit</a>
-                </td>
-            </tr>
-            <tr class="border-b bg-gray-50 ">
-                <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap ">
-                    Microsoft Surface Pro
-                </th>
-                <td class="px-6 py-4">
-                    White
-                </td>
-                <td class="px-6 py-4">
-                    Laptop PC
-                </td>
-                <td class="px-6 py-4">
-                    $1999
-                </td>
-                <td class="px-6 py-4">
-                    <a href="#" class="font-medium text-blue-600  hover:underline">Edit</a>
-                </td>
-            </tr>
-            <tr class="bg-white border-b ">
-                <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap ">
-                    Magic Mouse 2
-                </th>
-                <td class="px-6 py-4">
-                    Black
-                </td>
-                <td class="px-6 py-4">
-                    Accessories
-                </td>
-                <td class="px-6 py-4">
-                    $99
-                </td>
-                <td class="px-6 py-4">
-                    <a href="#" class="font-medium text-blue-600 hover:underline">Edit</a>
-                </td>
-            </tr>
-            <tr class="border-b bg-gray-50 ">
-                <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap ">
-                    Google Pixel Phone
-                </th>
-                <td class="px-6 py-4">
-                    Gray
-                </td>
-                <td class="px-6 py-4">
-                    Phone
-                </td>
-                <td class="px-6 py-4">
-                    $799
-                </td>
-                <td class="px-6 py-4">
-                    <a href="#" class="font-medium text-blue-600  hover:underline">Edit</a>
-                </td>
-            </tr>
-            <tr>
-                <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap ">
-                    Apple Watch 5
-                </th>
-                <td class="px-6 py-4">
-                    Red
-                </td>
-                <td class="px-6 py-4">
-                    Wearables
-                </td>
-                <td class="px-6 py-4">
-                    $999
-                </td>
-                <td class="px-6 py-4">
-                    <a href="#" class="font-medium text-blue-600 hover:underline">Edit</a>
-                </td>
-            </tr>
-        </tbody>
-    </table>
-</div>
-    </div>
-  )
-}
+  const [user, setUsers] = useState([]);
+  const [showModal, setShowModal] = useState(false);
+  const [ bookings , setBookings ] = useState([]);
 
-export default GetAllUsers
+  const GetAllUsers = async() => {
+    try {
+      const { data } = await axios.request({
+        method: "GET",
+        url: "https://skyhive-admin.vercel.app/api/users/allUsers",
+      });
+      setUsers(data.data);
+    } catch (err) {
+      console.log(err.response);
+    }
+  };
+  const GetBookings = async(uid) => {
+    try {
+      const { data } = await axios.request({
+        method: "GET",
+        url: `https://skyhive-admin.vercel.app/api/users/bookings/${uid}`,
+      });
+      console.log(data.bookings);
+      setBookings(data.bookings);
+    } catch (err) {
+      console.log(err.response);
+    }
+  };
+
+  useEffect(() => {
+    GetAllUsers();
+  }, [user]);
+  return (
+    <div className="px-5 py-5 md:px-10 lg:py-10 lg:px-32">
+      <div className="mb-6">
+        <span className="text-5xl underline-offset-4 underline tracking-wide font-light text-gray-600">
+          All Users
+        </span>
+      </div>
+      <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
+        <Table.UserTable user={user} setShowModal={setShowModal} showModal={showModal} GetBookings={GetBookings}/>
+      </div>
+      <Modal.UserBooking showModal={showModal} setShowModal={setShowModal} bookings={bookings}/>
+    </div>
+  );
+};
+
+export default GetAllUsers;
