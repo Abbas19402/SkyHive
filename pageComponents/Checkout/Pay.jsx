@@ -94,7 +94,7 @@ const CheckoutPage = ({ ticket }) => {
       amount: amount*100,
       order_id: data.data.id,
       description: "Thankyou for booking your flight",
-      image: "https://manuarora.in/logo.png",
+      image: "https://i.ibb.co/MkSRpbn/Sky-Hive-Logo.png",
       handler: function (response) {
         // Validate payment at server - using webhooks is a better idea.
         setPayment({
@@ -173,8 +173,8 @@ const CheckoutPage = ({ ticket }) => {
   return (
     flight !== {} && (
       <div className="w-full h-full lg:px-40 px-5 md:px-16 py-16 flex flex-col justify-center items-center">
-        <div className="flex flex-row justify-between items-center w-full h-20 border-2 px-5">
-          <span className="text-xl tracking-wide font-medium">{paymentStatus ? 'Download your Ticket' : `Pay ₹ ${Cost().finalFare}` }</span>
+        <div className="flex flex-row justify-between items-center w-full h-20 border-2 px-5 gap-x-5">
+          <span className="text-lg md:text-xl md:tracking-wide font-medium">{paymentStatus ? 'Download your Ticket' : `Pay ₹ ${Cost().finalFare}` }</span>
           {paymentStatus ? <button className='bg-neutral-800 px-5 py-2 text-gray-300 font-medium tracking-wider rounded' onClick={()=> Print()}>Download</button> : <button className='bg-neutral-800 px-5 py-2 text-gray-300 font-medium tracking-wider rounded' onClick={()=> {
             makePayment(Cost().finalFare)
           }}>

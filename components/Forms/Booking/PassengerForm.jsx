@@ -41,6 +41,7 @@ const PassengerForm = ({ savePassenger }) => {
                 type="text"
                 name="firstName"
                 id="firstName"
+                required
                 autoComplete="given-name"
                 className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
               />
@@ -59,6 +60,7 @@ const PassengerForm = ({ savePassenger }) => {
                 type="text"
                 name="lastName"
                 id="lastName"
+                required
                 className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
               />
             </div>
@@ -75,6 +77,7 @@ const PassengerForm = ({ savePassenger }) => {
                 id="age"
                 name="age"
                 type="text"
+                required
                 className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
               />
             </div>
@@ -92,78 +95,8 @@ const PassengerForm = ({ savePassenger }) => {
                 id="email"
                 name="email"
                 type="email"
+                required
                 autoComplete="email"
-                className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-              />
-            </div>
-          </div>
-
-          <div className="w-[80vw] md:w-[20vw]">
-            <label
-              htmlFor="country"
-              className="block text-sm font-medium leading-6 text-gray-900"
-            >
-              Country
-            </label>
-            <div className="mt-2">
-              <input
-                type="text"
-                name="country"
-                id="country"
-                className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-              />
-            </div>
-          </div>
-
-          <div className="w-[80vw] md:w-[40vw]">
-            <label
-              htmlFor="street-address"
-              className="block text-sm font-medium leading-6 text-gray-900"
-            >
-              Address
-            </label>
-            <div className="mt-2">
-              <input
-                type="text"
-                name="street-address"
-                id="street-address"
-                autoComplete="street-address"
-                className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-              />
-            </div>
-          </div>
-
-          <div className="w-[80vw] md:w-[20vw]">
-            <label
-              htmlFor="region"
-              className="block text-sm font-medium leading-6 text-gray-900"
-            >
-              State / Province
-            </label>
-            <div className="mt-2">
-              <input
-                type="text"
-                name="region"
-                id="region"
-                autoComplete="address-level1"
-                className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-              />
-            </div>
-          </div>
-
-          <div className="w-[80vw] md:w-[20vw]">
-            <label
-              htmlFor="postal-code"
-              className="block text-sm font-medium leading-6 text-gray-900"
-            >
-              ZIP / Postal code
-            </label>
-            <div className="mt-2">
-              <input
-                type="text"
-                name="postal-code"
-                id="postal-code"
-                autoComplete="postal-code"
                 className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
               />
             </div>

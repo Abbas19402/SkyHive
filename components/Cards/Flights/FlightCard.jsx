@@ -15,8 +15,12 @@ const FlightCard = ({ flightData , bookingType , returnFlight }) => {
     const { _id ,flightId , airline , departureDate , arrivalDate , aircraft , class:airlineClass , from , to , pickupAirport ,  destinationAirport , departureTime , arrivalTime , DAN , PAN , airlineLogo } = flightData;
 
     let options = [];
-    const [ selectedClass , setSelectedClass ] = useState('Class');
-    const [ selectedReturnClass , setSelectedReturnClass ] = useState('Class');
+    const [ isClassSelected , setIsClassSelected ] = useState({
+        outbound: false,
+        inbound: false
+    })
+    const [ selectedClass , setSelectedClass ] = useState('Select Class');
+    const [ selectedReturnClass , setSelectedReturnClass ] = useState('Select Class');
     const [ chosenClass , setChosenClass ] = useState(null);
     const [ chosenReturnClass , setChosenReturnClass ] = useState({});
     const [ openDropDown , setOpenDropDown ] = useState(false)
@@ -75,12 +79,14 @@ const FlightCard = ({ flightData , bookingType , returnFlight }) => {
         }
     }
 
-    const Cost = (chosenAirlineClass) => {
-        if(chosenAirlineClass !== null) {
-            let totalFare = parseInt(chosenAirlineClass.fare) * 1000;
+    const Cost = (chosenAirlineClass , type) => {
+        if(
+            (isClassSelected.outbound && isClassSelected.inbound) || 
+            (isClassSelected.outbound && isClassSelected.inbound == false) || 
+            (isClassSelected.outbound == false && isClassSelected.inbound)
+        ) {
+            let totalFare = parseInt(chosenAirlineClass.fare);
             return totalFare
-        } else {
-            return 'Choose class!!'
         }
       }
 
@@ -405,7 +411,7 @@ const FlightCard = ({ flightData , bookingType , returnFlight }) => {
                     </div>
                     <div className="flex flex-row justify-between items-center w-full py-2 px-4 gap-x-4">
                         <div className="relative w-full h-7 bg-white group rounded-lg" onClick={()=> setOpenDropDown(!openDropDown)}>
-                            <div className="w-full h-full flex flex-col justify-center items-start bg-amber-100 rounded-lg">
+                            <div className="w-full h-full flex flex-col justify-center items-start bg-slate-100 rounded-lg">
                                 <div className='w-full flex justify-center items-center px-3'>
                                     <span className="text-sm tracking-tight uppercase my-auto leading-tight whitespace-nowrap">{selectedClass}</span>
                                 </div>
@@ -418,13 +424,13 @@ const FlightCard = ({ flightData , bookingType , returnFlight }) => {
                                             setSelectedClass(item.airlineClassName)
                                             setChosenClass(item)
                                             setOpenDropDown(!openDropDown)
+                                            setIsClassSelected({
+                                                outbound: true,
+                                                inbound: isClassSelected.inbound
+                                            })
                                         }}>
                                             <span className="text-sm font-medium text-gray-600 whitespace-nowrap hover:text-sky-600">{item.airlineClassName}</span>
-                                        </div> : <div key={index} className="w-full min-h-8 h-fit text-center hover:cursor-pointer pointer-events-none" onClick={() => {
-                                            setSelectedClass(item.airlineClassName)
-                                            setChosenClass(item)
-                                            setOpenDropDown(!openDropDown)
-                                        }}>
+                                        </div> : <div key={index} className="w-full min-h-8 h-fit text-center hover:cursor-pointer pointer-events-none">
                                             <span className="text-sm font-medium text-gray-400 whitespace-nowrap hover:text-sky-600">{item.airlineClassName} (Booked)</span>
                                         </div>
                                     ))}
@@ -432,7 +438,7 @@ const FlightCard = ({ flightData , bookingType , returnFlight }) => {
                             </div>
                         </div>
                         <div className="w-fit h-fit flex flex-col justify-center items-center ">
-                            <span className="text-md font-bold text-black tracking-wider capitalize whitespace-nowrap">{Cost(chosenClass)}</span>
+                            {isClassSelected.outbound && <span className="text-md font-bold text-black tracking-wider capitalize whitespace-nowrap">₹ {Cost(chosenClass)}</span>}
                         </div>
                     </div>
                     {bookingType == 'return' && returnFlight !== null && <>
@@ -459,7 +465,7 @@ const FlightCard = ({ flightData , bookingType , returnFlight }) => {
                     </div>
                     <div className="flex flex-row justify-between items-center w-full py-2 px-4 gap-x-4">
                         <div className="relative w-full h-7 bg-white group rounded-lg" onClick={()=> setOpenReturnDropDown(!openReturnDropDown)}>
-                            <div className="w-full h-full flex flex-col justify-center items-start bg-amber-100 rounded-lg">
+                            <div className="w-full h-full flex flex-col justify-center items-start bg-slate-100 rounded-lg">
                                 <div className='w-full flex justify-center items-center px-3'>
                                     <span className="text-sm tracking-tight uppercase my-auto leading-tight whitespace-nowrap">{selectedReturnClass}</span>
                                 </div>
@@ -472,6 +478,10 @@ const FlightCard = ({ flightData , bookingType , returnFlight }) => {
                                             setSelectedReturnClass(item.airlineClassName)
                                             setChosenReturnClass(item)
                                             setOpenReturnDropDown(!openReturnDropDown)
+                                            setIsClassSelected({ 
+                                                outbound: isClassSelected.outbound,
+                                                inbound: true
+                                            })
                                         }}>
                                             <span className="text-sm font-medium text-gray-600 whitespace-nowrap hover:text-sky-600">{item.airlineClassName}</span>
                                         </div> : <div key={index} className="w-full min-h-8 h-fit text-center hover:cursor-pointer pointer-events-none" onClick={() => {
@@ -485,9 +495,9 @@ const FlightCard = ({ flightData , bookingType , returnFlight }) => {
                                 </div>
                             </div>
                         </div>
-                        <div className="w-fit h-fit flex flex-col justify-center items-center ">
-                            <span className="text-md font-bold text-black tracking-wider capitalize whitespace-nowrap">{Cost(chosenReturnClass)}</span>
-                        </div>
+                        {isClassSelected.inbound && <div className="w-fit h-fit flex flex-col justify-center items-center ">
+                            <span className="text-md font-bold text-black tracking-wider capitalize whitespace-nowrap">₹ {Cost(chosenReturnClass)}</span>
+                        </div>}
                     </div>
                     </>}
                     <div className="w-full flex justify-center items-center">

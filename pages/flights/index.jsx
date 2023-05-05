@@ -2,12 +2,10 @@ import React, { useEffect , useState } from 'react'
 import { useRouter } from 'next/router'
 import FlightsLayout from '@/Layouts/Flight';
 import FlightsPage from '@/pageComponents/Flights';
-import { useDispatch, useSelector } from 'react-redux';
-import { deleteUser } from '@/Redux/Auth/AT';
+import { useSelector } from 'react-redux';
 
 const Flights = () => {
   const router = useRouter();
-  const dispatch = useDispatch();
 
   const loginStatus = useSelector(state => state.userData.loginStatus);
 

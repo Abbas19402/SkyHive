@@ -132,8 +132,8 @@ const BookingDetails = ({ data , chosenClass , returnFlightData , chosenReturnCl
         <div className="border-b border-gray-900/10 pb-12 w-full">
           <div className="flex flex-col justify-start items-start border-b border-gray-900/10 my-10 pb-5">
             <h2 className="text-base font-semibold leading-7 text-gray-900">User Information</h2>
-            <div className="my-5 mb-10 flex flex-row gap-x-6 w-fit">
-              <div className="w-[50%]">
+            <div className="my-5 mb-10 flex flex-col md:flex-row gap-x-6 w-full md:w-fit">
+              <div className="w-full md:w-[50%] my-2">
                 <label htmlFor="username" className="block text-sm font-medium leading-6 text-gray-900">
                   Username
                 </label>
@@ -149,7 +149,7 @@ const BookingDetails = ({ data , chosenClass , returnFlightData , chosenReturnCl
                   />
                 </div>
               </div>
-              <div className="w-[100%]">
+              <div className="w-[100%] my-2">
                 <label htmlFor="email" className="block text-sm font-medium leading-6 text-gray-900">
                   Email
                 </label>
@@ -217,7 +217,7 @@ const BookingDetails = ({ data , chosenClass , returnFlightData , chosenReturnCl
             <p className="mt-1 text-sm leading-6 text-gray-600">Confirm your flight details!!.</p>
             
             <Forms.booking.flight flightData={data}/>
-            {returnFlightData !== null && chosenReturnClass !== null && <div className='mt-14'>
+            {returnFlightData !== null && chosenReturnClass !== null && <div className='mt-14 w-full'>
               <h2 className="text-base font-semibold leading-7 text-gray-600">Return Flight Information</h2>
               <Forms.booking.flight flightData={returnFlightData} />
             </div>}
