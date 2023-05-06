@@ -24,7 +24,7 @@ export default function Contact() {
     try {
       const ContactRequestResponse = await axios.request({
         method: 'POST',
-        url: 'https://admin-skyhive.vercel.app/api/contact/save_contact_request',
+        url: 'https://skyhive-admin.vercel.app/api/contact/save_contact_request',
         headers: {
           'Authorization': `Bearer ${JSON.parse(user.access_token)}` 
         },
