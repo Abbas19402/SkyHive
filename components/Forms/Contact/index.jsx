@@ -1,17 +1,22 @@
 import { useState } from 'react'
 import { ChevronDownIcon } from '@heroicons/react/20/solid'
 import { Switch } from '@headlessui/react'
-import { useSelector } from 'react-redux'
+import { useSelector , useDispatch } from 'react-redux'
 import { toast } from 'react-toastify'
 import axios from 'axios'
+import { deleteUser } from '@/Redux/Auth/AT'
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(' ')
 }
 
 export default function Contact() {
+  const dispatch = useDispatch();
+  
   const [agreed, setAgreed] = useState(false)
+
   const user = useSelector(state => state.userData.user);
+  const loginStatus = useSelector(state => state.userData.loginStatus);
 
   const SubmitContactForm = async(e) => {
     e.preventDefault();
@@ -20,22 +25,31 @@ export default function Contact() {
     for( var pair of form.entries() ) {
       values[pair[0]] = pair[1];
     }
-    console.log(values);
-    try {
-      const ContactRequestResponse = await axios.request({
-        method: 'POST',
-        url: 'https://skyhive-admin.vercel.app/api/contact/save_contact_request',
-        headers: {
-          'Authorization': `Bearer ${JSON.parse(user.access_token)}` 
-        },
-        data: values
-      })
-      toast.success("Thanks for contacting. We will be in touch soon!!");
-      console.log(ContactRequestResponse);
-    } catch(err) {
-      toast.error('Error while requesting to save contact!!!')
-      console.log(err);
+    if(loginStatus) {
+      try {
+        const ContactRequestResponse = await axios.request({
+          method: 'POST',
+          url: 'https://skyhive-admin.vercel.app/api/contact/save_contact_request',
+          headers: {
+            'Authorization': `Bearer ${JSON.parse(user.access_token)}` 
+          },
+          data: values
+        })
+        toast.success("Thanks for contacting. We will be in touch soon!!");
+        console.log(ContactRequestResponse);
+      } catch(err) {
+        if(err.response.status == 401) {
+          dispatch(deleteUser())
+          toast.error('Your session has expired!!')
+        } else {
+          toast.error('Error while requesting to save contact!!!')
+        } 
+        console.log(err);
+      }
+    } else {
+      toast.error('Please login first!!')
     }
+    
     e.target.reset();
   }
   return (
@@ -97,6 +111,8 @@ export default function Contact() {
                 type="email"
                 name="email"
                 id="email"
+                disabled
+                value={user.email}
                 autoComplete="email"
                 className="block w-full rounded-md border-0 px-3.5 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
               />
