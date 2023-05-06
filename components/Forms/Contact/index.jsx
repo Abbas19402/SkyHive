@@ -1,20 +1,9 @@
-/*
-  This example requires some changes to your config:
-  
-  ```
-  // tailwind.config.js
-  module.exports = {
-    // ...
-    plugins: [
-      // ...
-      require('@tailwindcss/forms'),
-    ],
-  }
-  ```
-*/
 import { useState } from 'react'
 import { ChevronDownIcon } from '@heroicons/react/20/solid'
 import { Switch } from '@headlessui/react'
+import { useSelector } from 'react-redux'
+import { toast } from 'react-toastify'
+import axios from 'axios'
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(' ')
@@ -22,7 +11,33 @@ function classNames(...classes) {
 
 export default function Contact() {
   const [agreed, setAgreed] = useState(false)
+  const user = useSelector(state => state.userData.user);
 
+  const SubmitContactForm = async(e) => {
+    e.preventDefault();
+    let values = {};
+    const form = new FormData(e.currentTarget);
+    for( var pair of form.entries() ) {
+      values[pair[0]] = pair[1];
+    }
+    console.log(values);
+    try {
+      const ContactRequestResponse = await axios.request({
+        method: 'POST',
+        url: 'https://admin-skyhive.vercel.app/api/contact/save_contact_request',
+        headers: {
+          'Authorization': `Bearer ${JSON.parse(user.access_token)}` 
+        },
+        data: values
+      })
+      toast.success("Thanks for contacting. We will be in touch soon!!");
+      console.log(ContactRequestResponse);
+    } catch(err) {
+      toast.error('Error while requesting to save contact!!!')
+      console.log(err);
+    }
+    e.target.reset();
+  }
   return (
     <div className="isolate bg-white px-6 py-24 sm:py-32 lg:px-8 scroll-smooth">
       <div
@@ -43,31 +58,31 @@ export default function Contact() {
           Feel free to contact us!!
         </p>
       </div>
-      <form action="#" method="POST" className="mx-auto mt-16 max-w-xl sm:mt-20">
+      <form onSubmit={SubmitContactForm} className="mx-auto mt-16 max-w-xl sm:mt-20">
         <div className="grid grid-cols-1 gap-x-8 gap-y-6 sm:grid-cols-2">
           <div>
-            <label htmlFor="first-name" className="block text-sm font-semibold leading-6 text-gray-900">
+            <label htmlFor="firstname" className="block text-sm font-semibold leading-6 text-gray-900">
               First name
             </label>
             <div className="mt-2.5">
               <input
                 type="text"
-                name="first-name"
-                id="first-name"
+                name="firstname"
+                id="firstname"
                 autoComplete="given-name"
                 className="block w-full rounded-md border-0 px-3.5 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
               />
             </div>
           </div>
           <div>
-            <label htmlFor="last-name" className="block text-sm font-semibold leading-6 text-gray-900">
+            <label htmlFor="lastname" className="block text-sm font-semibold leading-6 text-gray-900">
               Last name
             </label>
             <div className="mt-2.5">
               <input
                 type="text"
-                name="last-name"
-                id="last-name"
+                name="lastname"
+                id="lastname"
                 autoComplete="family-name"
                 className="block w-full rounded-md border-0 px-3.5 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
               />
@@ -110,8 +125,8 @@ export default function Contact() {
               </div>
               <input
                 type="tel"
-                name="phone-number"
-                id="phone-number"
+                name="phoneNumber"
+                id="phoneNumber"
                 autoComplete="tel"
                 className="block w-full rounded-md border-0 px-3.5 py-2 pl-20 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
               />

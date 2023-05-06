@@ -13,7 +13,6 @@ export default function App({ Component, pageProps }) {
      <Provider store={Store}>
         <PersistGate persistor={persistor}>
           <RootLayout>
-            
             <Component {...pageProps} />
           </RootLayout>
         </PersistGate>
