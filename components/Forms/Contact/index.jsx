@@ -4,7 +4,6 @@ import { Switch } from '@headlessui/react'
 import { useSelector , useDispatch } from 'react-redux'
 import { toast } from 'react-toastify'
 import axios from 'axios'
-import { deleteUser } from '@/Redux/Auth/AT'
 import Icon from '@/components/Icons'
 
 function classNames(...classes) {

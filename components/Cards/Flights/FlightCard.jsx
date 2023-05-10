@@ -7,6 +7,7 @@ import { saveFlight , saveReturnFlight } from '@/Redux/Flight'
 import Styles from '@/styles/scrollbar.module.css'
 import { toast } from 'react-toastify'
 import { setAirlineClass } from '@/Redux/Booking/Class'
+import Icon from '@/components/Icons'
 
 const FlightCard = ({ flightData , bookingType , returnFlight }) => {
     const dispatch = useDispatch();
@@ -22,6 +23,7 @@ const FlightCard = ({ flightData , bookingType , returnFlight }) => {
     const [ selectedClass , setSelectedClass ] = useState('Select Class');
     const [ selectedReturnClass , setSelectedReturnClass ] = useState('Select Class');
     const [ chosenClass , setChosenClass ] = useState(null);
+    const [ loading , setLoading ] = useState(false);
     const [ chosenReturnClass , setChosenReturnClass ] = useState({});
     const [ openDropDown , setOpenDropDown ] = useState(false)
     const [ openReturnDropDown , setOpenReturnDropDown ] = useState(false)
@@ -47,6 +49,7 @@ const FlightCard = ({ flightData , bookingType , returnFlight }) => {
             toast.warning('Please choose your class!!')
         } else {
             dispatch(saveFlight(selectedFlightData));
+            setLoading(false);
             router.push({
                 pathname: `/flights/${id}`,
                 query: {
@@ -66,6 +69,7 @@ const FlightCard = ({ flightData , bookingType , returnFlight }) => {
         } else {
             dispatch(saveFlight(selectedFlightData));
             dispatch(saveReturnFlight(returnFlightData));
+            setLoading(false);
             router.push({
                 pathname: `/flights/${id}`,
                 query: {
@@ -119,7 +123,7 @@ const FlightCard = ({ flightData , bookingType , returnFlight }) => {
                 ad: `${formattedADate(returnFlight.arrivalDate).day} ${formattedADate(returnFlight.arrivalDate).month} ${formattedADate(returnFlight.arrivalDate).year}`,
             })
         }
-    },[])
+    },[loading])
 
   return (
     <div className={`${bookingType == 'return' && 'border-0 border-black'}`}>
@@ -201,11 +205,10 @@ const FlightCard = ({ flightData , bookingType , returnFlight }) => {
 
                             <div className="w-full h-full flex flex-col justify-between items-center">
                                 <div className="w-full h-14 px-10 ">
-                                    <label className="text-[12px] text-gray-400 font-bold tracking-wide leading-tight">Choose your class:</label>
-                                    <div className="relative w-full h-10 bg-white group rounded-lg">
+                                    <div className="relative w-full h-8 border-2 rounded-xl bg-white group">
                                         <div className="w-full h-full shadow flex flex-col justify-center items-start">
                                             <div className='w-full flex justify-center items-center px-3'>
-                                                <span className="text-lg tracking-tight uppercase my-auto leading-tight whitespace-nowrap">{selectedClass}</span>
+                                                <span className="text-md font-medium text-gray-600 tracking-wide capitalize my-auto leading-tight whitespace-nowrap">{selectedClass}</span>
                                             </div>
                                         </div>
                                         <div className={` mt-1 absolute w-full transition-all duration-300 h-0 group-hover:h-20 origin-top bg-white rounded-md top-10 group:hover:p-5 overflow-hidden flex flex-col justify-center items-start`}>
@@ -243,8 +246,13 @@ const FlightCard = ({ flightData , bookingType , returnFlight }) => {
                             <span className="text-lg font-medium tracking-wide capitalize">{to}</span>
                         </div>
                     </div>
-                    {bookingType == 'one-way' && <button onClick={()=> book(_id , flightData , chosenClass) } className="w-[90%] h-[20%] flex flex-col justify-center items-center bg-neutral-800 m-2 rounded">
-                        <span className="text-3xl text-white">Book</span>
+                    {bookingType == 'one-way' && <button onClick={()=> {
+                        setLoading(true);
+                        book(_id , flightData , chosenClass)
+                    }} className="w-[90%] h-[20%] flex flex-col justify-center items-center bg-neutral-800 m-2 rounded">
+                        {loading ? <div className="animate-spin p-2 justify-center items-center">
+                            <Icon.Loader className="fill-white"/>
+                        </div> : <span className="text-2xl font-medium tracking-wide text-white">Book</span>}
                     </button>}
                 </div>
             </div>
@@ -378,8 +386,13 @@ const FlightCard = ({ flightData , bookingType , returnFlight }) => {
                             <span className="text-lg font-medium tracking-wide capitalize">{returnFlight.to}</span>
                         </div>
                     </div>
-                    <button onClick={()=> bookReturn(_id , flightData , returnFlight , chosenClass , chosenReturnClass ) } className="w-[90%] h-[20%] flex flex-col justify-center items-center bg-neutral-800 m-2 rounded">
-                        <span className="text-3xl text-white">Book</span>
+                    <button onClick={()=> {
+                        setLoading(true);
+                        bookReturn(_id , flightData , returnFlight , chosenClass , chosenReturnClass )
+                    } } className="w-[90%] h-[20%] flex flex-col justify-center items-center bg-neutral-800 m-2 rounded">
+                        {loading ? <div className="animate-spin p-2 justify-center items-center">
+                            <Icon.Loader className="fill-gray-500"/>
+                        </div> : <span className="text-2xl font-medium tracking-wide text-white">Book</span>}
                     </button>
                 </div>
             </div>
@@ -508,7 +521,9 @@ const FlightCard = ({ flightData , bookingType , returnFlight }) => {
                                 book(_id , flightData , chosenClass)
                             }
                         } } className="w-[90%] h-7 flex flex-col justify-center items-center bg-neutral-800 m-2 rounded">
-                            <span className="text-md font-medium tracking-wide text-white">Book</span>
+                            {loading ? <div className="animate-spin p-2 justify-center items-center">
+                                <Icon.Loader className="fill-gray-500"/>
+                            </div> : <span className="text-md font-medium tracking-wide text-white">Book</span>}
                         </button>
                     </div>
                 </div>

@@ -5,7 +5,7 @@ const FlightsLayout = ({children}) => {
   const [ showSidebar , setShowSidebar ] = useState(false)
   return (
     <div className='w-full h-fit flex flex-row justiyf-between items-start scroll-smooth'>
-        <div className={`${showSidebar ? 'w-[100vw]' : 'w-0'} transition-all duration-500 md:w-[40vw] h-full min-h-screen overflow-hidden`}>
+        <div className={`${showSidebar ? 'w-[100vw]' : 'w-0'} transition-all duration-500 md:w-[20vw] h-full min-h-screen overflow-hidden`}>
             <FlightsSidebar showSidebar={showSidebar} setShowSidebar={setShowSidebar} />
         </div>
         <div className={`${showSidebar ? 'w-0' : 'w-full'} overflow-hidden lg:w-[80vw] h-full min-h-screen`}>
