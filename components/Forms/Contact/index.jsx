@@ -5,6 +5,7 @@ import { useSelector , useDispatch } from 'react-redux'
 import { toast } from 'react-toastify'
 import axios from 'axios'
 import { deleteUser } from '@/Redux/Auth/AT'
+import Icon from '@/components/Icons'
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(' ')
@@ -14,11 +15,13 @@ export default function Contact() {
   const dispatch = useDispatch();
   
   const [agreed, setAgreed] = useState(false)
+  const [ loading , setLoading ] = useState(false)
 
   const user = useSelector(state => state.userData.user);
   const loginStatus = useSelector(state => state.userData.loginStatus);
 
   const SubmitContactForm = async(e) => {
+    setLoading(true)
     e.preventDefault();
     let values = {};
     const form = new FormData(e.currentTarget);
@@ -36,18 +39,15 @@ export default function Contact() {
           data: values
         })
         toast.success("Thanks for contacting. We will be in touch soon!!");
+        setLoading(false)
         console.log(ContactRequestResponse);
       } catch(err) {
-        if(err.response.status == 401) {
-          dispatch(deleteUser())
-          toast.error('Your session has expired!!')
-        } else {
-          toast.error('Error while requesting to save contact!!!')
-        } 
+        setLoading(false)
+        toast.error('Error while requesting to save contact!!!') 
         console.log(err);
       }
     } else {
-      toast.error('Please login first!!')
+      toast.warn('Please login first!!')
     }
     
     e.target.reset();
@@ -72,7 +72,13 @@ export default function Contact() {
           Feel free to contact us!!
         </p>
       </div>
-      <form onSubmit={SubmitContactForm} className="mx-auto mt-16 max-w-xl sm:mt-20">
+      <form 
+         onSubmit={(e) =>{ 
+          e.preventDefault(); 
+          agreed ? SubmitContactForm(e) : toast.warn('Agree to our privacy policy!!')
+        }} 
+        className="mx-auto mt-16 max-w-xl sm:mt-20"
+      >
         <div className="grid grid-cols-1 gap-x-8 gap-y-6 sm:grid-cols-2">
           <div>
             <label htmlFor="firstname" className="block text-sm font-semibold leading-6 text-gray-900">
@@ -106,12 +112,11 @@ export default function Contact() {
             <label htmlFor="email" className="block text-sm font-semibold leading-6 text-gray-900">
               Email
             </label>
-            <div className="mt-2.5">
+            <div className="mt-2.5 pointer-events-none opacity-70">
               <input
                 type="email"
                 name="email"
                 id="email"
-                disabled
                 value={user.email}
                 autoComplete="email"
                 className="block w-full rounded-md border-0 px-3.5 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
@@ -196,7 +201,11 @@ export default function Contact() {
             type="submit"
             className="block w-full rounded-md bg-neutral-800 px-3.5 py-2.5 text-center text-sm font-semibold text-white shadow-sm hover:bg-neutral-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
           >
-            Let's talk
+            {loading ? <div className='relative h-8 w-full flex justify-center items-center'>
+              <div className='absolute h-7 w-7 flex justify-center items-center animate-spin'>
+                <Icon.Loader className="fill-white "/>
+              </div>
+            </div> : <span>Let's talk</span>}
           </button>
         </div>
       </form>
