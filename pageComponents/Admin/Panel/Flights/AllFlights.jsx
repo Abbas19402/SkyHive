@@ -26,6 +26,11 @@ const AllFlightsPage = () => {
     },[flights])
   return (
     <div className=' px-5 py-5 md:px-10 lg:py-10 lg:px-32'>
+        <div className="mb-6">
+            <span className="text-5xl underline-offset-4 underline tracking-wide font-light text-gray-600">
+            All Flights
+            </span>
+        </div>
         <div className="rounded-lg overflow-x-auto">
             <Table.FlightsTable flight={flights} showModal={showModal} setShowModal={setShowModal}/>
         </div>

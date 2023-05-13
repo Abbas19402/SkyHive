@@ -27,7 +27,7 @@ const SearchFlights = () => {
   const customDateComponent = <div className='group relative w-fit h-fit flex flex-col justify-between items-center hover:cursor-pointer'>
       <div className='flex flex-row justify-between items-center w-full'>
         <div className='w-full h-full px-2 py-1.5 rounded-md  font-medium tracking-wide'>
-          <span className="text-base font-[400] tracking-wide text-gray-600">{isDateSelected ? `${departureDate.getDate()}/${departureDate.getMonth() + 1}/${departureDate.getFullYear()}` : "Departure"}</span>
+          <span className="text-base font-[400] tracking-wide text-gray-600">{isDateSelected ? `${departureDate.getDate()}/${departureDate.getMonth() + 1}/${departureDate.getFullYear()}` : "Departure Date"}</span>
         </div>
         <div className="p-2">
           <Icon.Calendar className="fill-gray-600 group-hover:fill-sky-700"/>
@@ -148,74 +148,71 @@ const SearchFlights = () => {
   },[loading])
 
   return (
-    <form onSubmit={Search} className='w-full h-full bg-white md:rounded-xl py-2'>
-        <div className="w-full h-full flex flex-col rounded-xl py-8 px-2 md:py-0 md:px-0 ">
-          <div className="text-left px-4 ">
-            <span className="text-xl font-light tracking-wide">Search your flights here:</span>
+    <form onSubmit={Search} className='w-full h-full bg-white md:rounded-xl lg:py-2'>
+        <div className="w-full h-full flex flex-col gap-y-4 rounded-xl py-8 px-2 md:py-0 md:px-0 ">
+          <div className="w-full h-full flex flex-col gap-y-4 justify-between items-center">
+            <div className="flex flex-col gap-y-3 md:flex-row justify-between items-center w-full">
+              <div className="w-full h-full px-2">
+                <div className="group w-full h-full flex flex-col gap-y-2 justify-center items-center">
+                  <div className='px-2 w-full'>
+                    <label htmlFor='from' className="text-md font-medium tracking-wide">From</label>
+                  </div>
+                  <div className="flex flex-row justify-around items-center w-full px-2">
+                    <Select options={airportsData} required name='from' className='w-full' placeholder="Departure" />
+                  </div>  
+                </div>
+              </div>
+              <div className="w-full h-full px-2">
+                <div className="group w-full h-full flex flex-col gap-y-2 justify-center items-center">
+                  <div className='px-2 w-full'>
+                    <label htmlFor='to' className="text-md font-medium tracking-wide">To</label>
+                  </div>
+                  <div className="flex flex-row justify-around items-center w-full px-2">
+                    <Select options={airportsData} required name='to' className='w-full' placeholder="Arrival" />
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
-          <div className="w-full h-full flex flex-col gap-y-4 lg:flex-row justify-between items-center">
-            <div className="w-full h-full px-2">
-              <div className="group w-full h-full flex flex-col gap-y-2 justify-center items-center">
-                <div className='px-2 w-full'>
-                  <label htmlFor='from' className="text-md font-medium tracking-wide">From</label>
-                </div>
-                <div className="flex flex-row justify-around items-center w-full px-2">
-                  <Select options={airportsData} required name='from' className='w-full' placeholder="Pickup" />
-                </div>  
+          <div className="flex flex-col gap-y-3 md:flex-row justify-between items-center">
+            <div className="w-full h-full flex flex-col gap-y-2 justify-center items-center px-2">
+              <div className="px-2 w-full">
+                <label htmlFor="departure" className="text-md font-medium tracking-wide">Departure</label>
+              </div>
+              <div className="w-full px-2">
+                <DatePicker 
+                  dateFormat="dd/mm/yyyy" 
+                  selected={departureDate}
+                  name='departure' 
+                  required
+                  onSelect={()=>setIsDateSelected(true)} 
+                  onChange={(date) => setDepartureDate(date)} 
+                  className='mx-auto rounded-md w-full font-medium tracking-wide border-[1px] hover:border-sky-600 border-gray-300' 
+                  customInput={customDateComponent}
+                />
               </div>
             </div>
-            <div className="w-full h-full px-2">
-              <div className="group w-full h-full flex flex-col gap-y-2 justify-center items-center">
-                <div className='px-2 w-full'>
-                  <label htmlFor='to' className="text-md font-medium tracking-wide">To</label>
-                </div>
-                <div className="flex flex-row justify-around items-center w-full px-2">
-                  <Select options={airportsData} required name='to' className='w-full' placeholder="Destination" />
-                </div>
+            <div className="w-full h-full flex flex-col gap-y-2 justify-center items-center px-2">
+              <div className="px-2 w-full">
+                <label htmlFor="returnDate" className={`text-md font-medium ${!isReturnSelected ? 'text-gray-300' : 'text-black'} tracking-wide`}>Return</label>
               </div>
-            </div>
-            <div className="w-full h-full px-2">
-              <div className="w-full h-full flex flex-col gap-y-2 justify-center items-center">
-                <div className="px-2 w-full">
-                  <label htmlFor="departure" className="text-md font-medium tracking-wide">Departure</label>
-                </div>
-                <div className="w-full px-2">
-                  <DatePicker 
-                    dateFormat="dd/mm/yyyy" 
-                    selected={departureDate}
-                    name='departure' 
-                    required
-                    onSelect={()=>setIsDateSelected(true)} 
-                    onChange={(date) => setDepartureDate(date)} 
-                    className='mx-auto rounded-md w-full font-medium tracking-wide border-[1px] hover:border-sky-600 border-gray-300' 
-                    customInput={customDateComponent}
-                  />
-                </div>
+              <div className={`w-full px-2 ${!isReturnSelected && 'pointer-events-none'}`}>
+                <DatePicker 
+                  dateFormat="dd/mm/yyyy" 
+                  selected={returnDate} 
+                  name='returnDate'
+                  required={true}
+                  disabled={!isReturnSelected}
+                  onSelect={()=>setIsDateSelected(true)} 
+                  onChange={(date) => setReturnDate(date)} 
+                  className={`mx-auto rounded-md w-full font-medium tracking-wide border-[1px] ${isReturnSelected && 'hover:border-sky-600'} border-gray-300`}
+                  customInput={customReturnDateComponent}
+                />
               </div>
             </div>
           </div>
           <div className="w-full h-full flex flex-col justify-between items-center">
             <div className="w-full h-full flex flex-col lg:flex-row">
-              <div className="w-full h-[60%] md:h-full px-2">
-                <div className="w-full h-full flex flex-col gap-y-2 justify-center items-center">
-                  <div className="px-2 w-full">
-                    <label htmlFor="returnDate" className={`text-md font-medium ${!isReturnSelected ? 'text-gray-300' : 'text-black'} tracking-wide`}>Return</label>
-                  </div>
-                  <div className={`w-full px-2 ${!isReturnSelected && 'pointer-events-none'}`}>
-                    <DatePicker 
-                      dateFormat="dd/mm/yyyy" 
-                      selected={returnDate} 
-                      name='returnDate'
-                      required={true}
-                      disabled={!isReturnSelected}
-                      onSelect={()=>setIsDateSelected(true)} 
-                      onChange={(date) => setReturnDate(date)} 
-                      className={`mx-auto rounded-md w-full font-medium tracking-wide border-[1px] ${isReturnSelected && 'hover:border-sky-600'} border-gray-300`}
-                      customInput={customReturnDateComponent}
-                    />
-                  </div>
-                </div>
-              </div>
               <div className="lg:hidden flex w-full h-[40%] flex-row justify-start items-center gap-x-3 px-4 py-1">
               <div className='flex flex-row justify-start items-center gap-x-2'>
                 <input type="radio" required name="booking_type" onChange={()=> setIsReturnSelected(false)} value={'one-way'}/> <label htmlFor="booking_type" className="text-md font-medium tracking-wide">One Way</label>  
@@ -224,23 +221,6 @@ const SearchFlights = () => {
                 <input type="radio" required name="booking_type" onChange={()=> setIsReturnSelected(true)} value={'return'}/> <label htmlFor="booking_type" className="text-md font-medium tracking-wide">Return</label>  
               </div>
             </div>
-              <div className="w-full h-[40%] md:h-full flex justify-center items-end px-4 lg:pr-4 pb-3 md:pb-0">
-                {/* <Link href={'/flights'}  className="w-full h-full flex flex-col justify-center items-end pr-4"> */}
-                  <button
-                    type="submit"
-                    className="group relative flex w-full justify-center rounded-md bg-neutral-800 px-3 py-2 text-sm font-semibold text-white hover:bg-neutral-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 mt-auto"
-                  >
-                    <span className="absolute inset-y-0 left-0 flex items-center pl-3">
-                    {loading ? <div className='animate-spin'>
-                      <Icon.Loader />
-                    </div> : <div>
-                      <Icon.Flight className="h-5 w-5 fill-white group-hover:fill-gray-800"  /> 
-                    </div>}
-                    </span>
-                    Search
-                  </button>
-                {/* </Link> */}
-              </div>
             </div>
             <div className="hidden lg:flex w-full h-[40%] flex-row justify-start items-center gap-x-3 px-4 py-1">
               <div className='flex flex-row justify-start items-center gap-x-2'>
@@ -249,6 +229,21 @@ const SearchFlights = () => {
               <div className='flex flex-row justify-start items-center gap-x-2'>
                 <input type="radio" required name="booking_type" onChange={()=> setIsReturnSelected(true)} value={'return'}/> <label htmlFor="booking_type" className="text-md font-medium tracking-wide">Return</label>  
               </div>
+            </div>
+            <div className="lg:w-72 place-self-end w-full h-[40%] md:h-full flex justify-center items-end px-4 lg:pr-4 pb-3 md:pb-0">
+              <button
+                type="submit"
+                className="group relative flex w-full justify-center rounded-md bg-neutral-800 px-3 py-2 text-sm font-semibold text-white hover:bg-neutral-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 mt-3"
+              >
+                <span className="absolute inset-y-0 left-0 flex items-center pl-3">
+                  {loading ? <div className='animate-spin'>
+                    <Icon.Loader />
+                    </div> : <div>
+                      <Icon.Flight className="h-5 w-5 fill-white group-hover:fill-gray-800"  /> 
+                  </div>}
+                </span>
+                  Search
+              </button>
             </div>
           </div>
         </div>

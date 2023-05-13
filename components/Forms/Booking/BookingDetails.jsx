@@ -116,7 +116,7 @@ const BookingDetails = ({ data , chosenClass , returnFlightData , chosenReturnCl
     }
   }
   return (
-    <div className='w-full'>
+    <div className='w-full scroll-smooth'>
       <div
         className="fixed inset-x-0 top-[-10rem] -z-10 transform-gpu overflow-hidden blur-3xl sm:top-[-20rem]"
         aria-hidden="true"

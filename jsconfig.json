@@ -8,6 +8,7 @@
       "@/Constants/*": ["./Constants/*"],
       "@/Redux/*": ["./Redux/*"],
       "@/Layouts/*": ["./Layouts/*"],
+      "@/Animations/*": ["./Animations/*"],
     }
   }
 }

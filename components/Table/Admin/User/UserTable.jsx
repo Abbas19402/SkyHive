@@ -20,6 +20,9 @@ const UserTable = ({ user , setShowModal , showModal , GetBookings }) => {
               <th scope="col" className="px-6 py-3 whitespace-nowrap">
                 Bookings
               </th>
+              <th scope="col" className="px-6 py-3 whitespace-nowrap">
+                Remove
+              </th>
             </tr>
           </thead>
           <tbody>
@@ -45,6 +48,15 @@ const UserTable = ({ user , setShowModal , showModal , GetBookings }) => {
                     }}>
                     <span className="underline tracking-wide hover:text-blue-500 font-medium transition-all duration-500">
                       Click
+                    </span>
+                  </div>
+                </td>
+                <td className="px-6 py-4 hover:cursor-pointer hover:scale-110 transition-all duration-500">
+                  <div onClick={() => {
+                      setShowModal(true)
+                    }}>
+                    <span className="underline tracking-wide hover:text-blue-500 font-medium transition-all duration-500 text-red-500">
+                      Remove
                     </span>
                   </div>
                 </td>
