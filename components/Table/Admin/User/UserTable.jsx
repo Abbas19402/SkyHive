@@ -52,13 +52,13 @@ const UserTable = ({ user , setShowModal , showModal , setShowBookingModal , sho
                   </div>
                 </td>
                 <td className="px-6 py-4 hover:cursor-pointer hover:scale-110 transition-all duration-500">
-                  <div onClick={() => {
+                  {item.email !== "abbas.dalal19402@gmail.com" && <div onClick={() => {
                       setShowModal(true)
                     }}>
                     <span className="underline tracking-wide hover:text-blue-500 font-medium transition-all duration-500 text-red-500">
                       Remove
                     </span>
-                  </div>
+                  </div>}
                 </td>
               </tr>
             ))}
