@@ -1,6 +1,6 @@
 import React from 'react'
 
-const UserTable = ({ user , setShowModal , showModal , GetBookings }) => {
+const UserTable = ({ user , setShowModal , showModal , setShowBookingModal , showBookingModal, GetBookings }) => {
   return (
     <table className="w-full text-sm text-left text-gray-500 ">
           <thead className="text-xs text-gray-700 uppercase bg-gray-200 ">
@@ -43,7 +43,7 @@ const UserTable = ({ user , setShowModal , showModal , GetBookings }) => {
                 </td>
                 <td className="px-6 py-4 hover:cursor-pointer hover:scale-110 transition-all duration-500">
                   <div onClick={() => {
-                        setShowModal(!showModal)
+                        setShowBookingModal(!showBookingModal)
                         GetBookings(item._id)
                     }}>
                     <span className="underline tracking-wide hover:text-blue-500 font-medium transition-all duration-500">

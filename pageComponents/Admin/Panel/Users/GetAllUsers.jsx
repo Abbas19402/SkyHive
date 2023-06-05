@@ -8,6 +8,7 @@ import { toast } from "react-toastify";
 const GetAllUsers = () => {
   const [user, setUsers] = useState([]);
   const [showModal, setShowModal] = useState(false);
+  const [showBookingModal, setShowBookingModal] = useState(false);
   const [ bookings , setBookings ] = useState([]);
   const [ confirmedDeleteUser, setConfirmedDeleteUser ] = useState(false);
 
@@ -77,6 +78,8 @@ const GetAllUsers = () => {
           user={user} 
           setShowModal={setShowModal} 
           showModal={showModal} 
+          setShowBookingModal={setShowBookingModal} 
+          showBookingModal={showBookingModal} 
           GetBookings={GetBookings} 
           DeleteUser={DeleteUser} 
           confirmedDeleteUser={confirmedDeleteUser}
@@ -88,6 +91,11 @@ const GetAllUsers = () => {
         confirmedDeleteUser={confirmedDeleteUser} 
         setConfirmedDeleteUser={setConfirmedDeleteUser}
         DeleteUser={DeleteUser}
+      />
+      <Modal.UserBooking 
+        showModal={showBookingModal} 
+        setShowModal={setShowBookingModal} 
+        bookings={bookings}
       />
     </div>
   );

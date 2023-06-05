@@ -12,7 +12,6 @@ const FlightsPage = ({ flights , bookingType }) => {
         <div className="p-2 flex flex-col gap-y-5">
           {flights.returningFlight ? [...Array(flights?.searchedFlights?.length)].map((_, index) => (
                 <div key={index}>
-                  {/* <Card.ReturnFlightCard flightData={ReturnFlightCardData.searchedFlights[index]} returnFlight={ReturnFlightCardData.returningFlight[index]}/> */}
                     <Card.FlightCard flightData={ReturnFlightCardData.searchedFlights[index]} returnFlight={ReturnFlightCardData.returningFlight[index]} bookingType={bookingType} />
                 </div>
           )) : flights?.searchedFlights?.map( (item,index) => (

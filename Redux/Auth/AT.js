@@ -9,6 +9,7 @@ export const AuthenticationStates = createSlice({
   reducers: {
     getUser: (state , action) => {
       state.user = action.payload
+      localStorage.setItem('AT',action.payload.access_token)
       state.loginStatus = true
     },
     deleteUser: (state) => {

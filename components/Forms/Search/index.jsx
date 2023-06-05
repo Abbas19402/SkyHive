@@ -1,7 +1,6 @@
 import React , { useEffect, useState } from 'react'
 import DatePicker from 'react-datepicker'
-import Select from 'react-select' 
-import axios from 'axios';
+import Select from 'react-select'
 import { useSelector , useDispatch } from 'react-redux';
 import { useRouter } from 'next/router';
 import { deleteUser } from '@/Redux/Auth/AT';
@@ -9,6 +8,7 @@ import "react-datepicker/dist/react-datepicker.css";
 import { toast } from 'react-toastify';
 
 import Icon from '@/components/Icons';
+import http from '@/utils/http';
 
 const SearchFlights = () => {
   const router = useRouter();
@@ -48,8 +48,8 @@ const SearchFlights = () => {
 
   const Search = async(e) => {
     e.preventDefault();
-    if(loginStatus) {
-      setLoading(true)
+    if (loginStatus) {
+      setLoading(true);
       const { access_token } = user;
 
       const form = new FormData(e.currentTarget);
@@ -62,7 +62,9 @@ const SearchFlights = () => {
       if (isReturnSelected) {
         form.append(
           "returnDate",
-          `${returnDate.getDate()}/${returnDate.getMonth()+1}/${returnDate.getFullYear()}`
+          `${returnDate.getDate()}/${
+            returnDate.getMonth() + 1
+          }/${returnDate.getFullYear()}`
         );
       }
       let values = {};
@@ -70,68 +72,65 @@ const SearchFlights = () => {
         values[pair[0]] = pair[1];
       }
 
-      const isFormValid = Object.values(values).every( item => item !== '' );
-      toast.info(isFormValid)
+      const isFormValid = Object.values(values).every((item) => item !== "");
+      toast.info(isFormValid);
 
-      const options = {
-        method: "POST",
-        url: "https://skyhive-admin.vercel.app/api/flights/search",
-        headers: {
-          Authorization: `Bearer ${JSON.parse(access_token)}`,
-        },
-        data: values,
-      };
-
-      if(isFormValid) {
-        axios
-        .request(options)
-        .then(function (response) {
-          setLoading(false)
-          if(values.booking_type == 'return') {
-            const { searchedFlights , returningFlight } = response.data;
-            router.push(
-              {
-                pathname: "/flights",
-                query: {
-                  data: JSON.stringify({ searchedFlights , returningFlight }),
-                  booking_type: 'return'
+      if (isFormValid) {
+        await http
+          .post("https://skyhive-admin.vercel.app/api/flights/search", values)
+          .then((response) => {
+            setLoading(false);
+            if (values.booking_type == "return") {
+              const { searchedFlights, returningFlight } = response;
+              router.push(
+                {
+                  pathname: "/flights",
+                  query: {
+                    data: JSON.stringify({ searchedFlights, returningFlight }),
+                    booking_type: "return",
+                  },
                 },
-              },
-              "/flights"
-            );
-            localStorage.setItem("flights", JSON.stringify({ searchedFlights , returningFlight }));
-            localStorage.setItem("booking_type", 'return');
-          } else {
-            const { searchedFlights } = response.data;
-            router.push(
-              {
-                pathname: "/flights",
-                query: {
-                  data: JSON.stringify({ searchedFlights }),
-                  booking_type: 'one-way'
+                "/flights"
+              );
+              localStorage.setItem(
+                "flights",
+                JSON.stringify({ searchedFlights, returningFlight })
+              );
+              localStorage.setItem("booking_type", "return");
+            } else {
+              console.log(response);
+              const { searchedFlights } = response;
+              router.push(
+                {
+                  pathname: "/flights",
+                  query: {
+                    data: JSON.stringify({ searchedFlights }),
+                    booking_type: "one-way",
+                  },
                 },
-              },
-              "/flights"
-            );
-            localStorage.setItem("flights", JSON.stringify({ searchedFlights }));
-            localStorage.setItem("booking_type", 'one-way');
-          }
-        })
-        .catch(function (error) {
-          console.error(error);
-          setLoading(false)
-          if(error.response.status == '401') {
-            dispatch(deleteUser())
-            toast.warn('Your session has expired. Please login again!!')
-          }
-        });
+                "/flights"
+              );
+              localStorage.setItem(
+                "flights",
+                JSON.stringify({ searchedFlights })
+              );
+              localStorage.setItem("booking_type", "one-way");
+            }
+          })
+          .catch((error) => {
+            console.error("error -> ",error);
+            setLoading(false);
+            if (error.status == "401") {
+              dispatch(deleteUser());
+              toast.warn("Your session has expired. Please login again!!");
+            }
+          });
       } else {
-        setLoading(false)
+        setLoading(false);
       }
-      
     } else {
-      setLoading(false)
-      toast.warn('Login Required!!')
+      setLoading(false);
+      toast.warn("Login Required!!");
     }
   }
 

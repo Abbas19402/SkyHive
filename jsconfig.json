@@ -9,6 +9,7 @@
       "@/Redux/*": ["./Redux/*"],
       "@/Layouts/*": ["./Layouts/*"],
       "@/Animations/*": ["./Animations/*"],
+      "@/utils/*": ["./utils/*"]
     }
   }
 }
