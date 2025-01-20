@@ -113,7 +113,7 @@ const CheckoutPage = ({ ticket }) => {
       prefill: {
         name: "SkyHive",
         email: "skyhive@gmail.com",
-        contact: "6375935703",
+        contact: "1234567890",
       },
     };
 
